@@ -1,0 +1,19 @@
+{
+  "name": "mapping_component",
+  "version": "1.0.0",
+  "description": "This component contains an option to select an input file form which metadata needs to be extracted, an option to search from available mapping schemas whose name will be self explainatory .",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "vite"
+  },
+  "author": "Ajay",
+  "license": "ISC",
+  "devDependencies": {
+    "vite": "^4.1.1"
+  },
+  "dependencies": {
+    "dropzone": "^6.0.0-beta.2",
+    "typeahead-standalone": "^4.17.0"
+  }
+}
