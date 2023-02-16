@@ -1,31 +1,28 @@
+// @ts-check
+
 import Dropzone from "dropzone";
 // Optionally, import the dropzone file to get default styling.
 import "dropzone/dist/dropzone.css";
 import "./style.css";
 
-const myDropzone = new Dropzone("#my-form",
+const myDropzone = new Dropzone(
+  "#my-form",
   {
-    dictDefaultMessage: "Upload",
+    dictDefaultMessage: "Drag and drop your input file here or click this field to choose a file.",
     maxFiles: 1,
     autoProcessQueue: false,
     paramName: "document"
   }
-);
-
-const output = document.querySelector("#output");
-
-//Dropzone("div#myId", { dictDefaultMessage:"Upload",url: "/file/post"});
-
-myDropzone.on("addedfile", (file) => {
+).on("addedfile", (file) => {
   // Add an info line about the added file for each file.
-  output.innerHTML += `<div>File added: ${file.name}</div>`;
+  let output = document.querySelector("#output")
+  if (output) {
+    output.innerHTML += `File added: ${file.name}`;
+  }
 });
 
 import typeahead from 'typeahead-standalone'; // imports library (js)
 import 'typeahead-standalone/dist/basic.css'; // imports basic styles (css)
-
-// local Data
-// const colors = ['Grey', 'Brown', 'Black', 'Blue','Green'];
 
 // input element to attach to
 const inputElement = document.getElementById("searchInput");
@@ -34,8 +31,10 @@ typeahead({
   input: inputElement,
   minLength: -1,
   source: {
+    local: ['Grey', 'Brown', 'Black', 'Blue','Green'],
     prefetch: {
-      url: 'http://localhost:8095/api/v1/mappingAdministration/'
+      url: 'http://localhost:8095/api/v1/mappingAdministration/',
+      done: false
     },
     identifier: "mappingId",
     // templates: {
@@ -45,22 +44,3 @@ typeahead({
     // }
   }
 });
-
-
-// typeahead({
-//   input: document.getElementById('colorSearch'),
-//   highlight: true,
-//   source: {
-//     local: ['Grey', 'Brown', 'Black', 'Blue'],
-//   }
-// });
-
-// typeahead({
-//   input: inputElement,
-//   source: {
-//     local: colors,
-//     // prefetch: {...}
-//     // remote: {...}
-//   },
-//   showHintOnFocus: true
-// });
