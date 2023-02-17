@@ -1,20 +1,18 @@
-import Dropzone from "dropzone";
-// Optionally, import the dropzone file to get default styling.
+import { Dropzone } from "dropzone";
 import "dropzone/dist/dropzone.css";
 import "./style.css";
 
 const myDropzone = new Dropzone("#my-form",
   {
-    dictDefaultMessage: "Upload",
+    dictDefaultMessage: "Choose your file",
     maxFiles: 1,
     autoProcessQueue: false,
-    paramName: "document"
+    paramName: "document",
+    highlight: true
   }
 );
 
 const output = document.querySelector("#output");
-
-//Dropzone("div#myId", { dictDefaultMessage:"Upload",url: "/file/post"});
 
 myDropzone.on("addedfile", (file) => {
   // Add an info line about the added file for each file.
@@ -23,9 +21,6 @@ myDropzone.on("addedfile", (file) => {
 
 import typeahead from 'typeahead-standalone'; // imports library (js)
 import 'typeahead-standalone/dist/basic.css'; // imports basic styles (css)
-
-// local Data
-// const colors = ['Grey', 'Brown', 'Black', 'Blue','Green'];
 
 // input element to attach to
 const inputElement = document.getElementById("searchInput");
@@ -37,30 +32,7 @@ typeahead({
     prefetch: {
       url: 'http://localhost:8095/api/v1/mappingAdministration/'
     },
-    identifier: "mappingId",
-    // templates: {
-    //   suggestion: (item, resultSet) => (
-    //     `<span class="preview" style="background-color: ${item.hash}"></span>
-    //     <div class="text">${item.label}</div>`)
-    // }
+    identifier: "mappingId"
   }
 });
 
-
-// typeahead({
-//   input: document.getElementById('colorSearch'),
-//   highlight: true,
-//   source: {
-//     local: ['Grey', 'Brown', 'Black', 'Blue'],
-//   }
-// });
-
-// typeahead({
-//   input: inputElement,
-//   source: {
-//     local: colors,
-//     // prefetch: {...}
-//     // remote: {...}
-//   },
-//   showHintOnFocus: true
-// });
