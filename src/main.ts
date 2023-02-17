@@ -1,8 +1,12 @@
 import templateContent from './template.html?raw'
 
 import Dropzone from "dropzone";
-import dropzoneBasicCSS from "dropzone/dist/basic.css?inline"
 import dropzoneCSS from "dropzone/dist/dropzone.css?inline"
+
+// Filepond https://pqina.nl/filepond/ as an alternative to dropzone?
+import * as FilePondLib from 'filepond';
+import { FilePond, FilePondOptions } from 'filepond';
+import filepondCSS from "filepond/dist/filepond.min.css?inline"
 
 import typeahead from 'typeahead-standalone';
 import { Dictionary, typeaheadResult } from 'typeahead-standalone/dist/types';
@@ -15,11 +19,20 @@ const ATTRIBUTES: string[] = [
 export class MappingInputProvider extends HTMLElement {
 
     shadowRoot: ShadowRoot;
+    private testingFileChooser: FilePond | null = null;
     private filechooser: Dropzone | null = null;
     private mappingchooser: typeaheadResult<Dictionary> | null = null;
 
     // --- Attributes accessible from the HTML tag:
     baseUrl: URL = new URL("http://localhost:8090")
+    // ---
+
+    // --- Helper methods
+    addCssContent(css: string): void {
+        let styleElem: HTMLStyleElement = document.createElement("style")
+        styleElem.textContent = css
+        this.shadowRoot.append(styleElem)
+    }
     // ---
 
     /**
@@ -37,26 +50,9 @@ export class MappingInputProvider extends HTMLElement {
         // Create Shadow DOM
         this.shadowRoot = this.attachShadow({ mode: 'open' })
 
-        {
-            // Add basic Dropzone CSS
-            let styleElem: HTMLStyleElement = document.createElement("style")
-            styleElem.textContent = dropzoneBasicCSS
-            this.shadowRoot.append(styleElem)
-        }
-
-        {
-            // Add Dropzone CSS
-            let styleElem: HTMLStyleElement = document.createElement("style")
-            styleElem.textContent = dropzoneCSS
-            this.shadowRoot.append(styleElem)
-        }
-
-        {
-            // Add basic Typeahead CSS
-            let styleElem: HTMLStyleElement = document.createElement("style")
-            styleElem.textContent = typeaheadCSS
-            this.shadowRoot.append(styleElem)
-        }
+        this.addCssContent(dropzoneCSS)
+        this.addCssContent(filepondCSS)
+        this.addCssContent(typeaheadCSS)
 
         {
             // Apply HTML Template to shadow DOM
@@ -98,6 +94,16 @@ export class MappingInputProvider extends HTMLElement {
             this.baseUrl = new URL(baseUrl)
         }
 
+
+        let filepondElement = this.shadowRoot.querySelector('input[type="file"]');
+        if (filepondElement != null) {
+            let options: FilePondOptions = FilePondLib.getOptions();
+            options.credits = false; // does not work for some reason
+            options.maxFiles = 1;
+            this.testingFileChooser = FilePondLib.create(filepondElement, options);
+        }
+
+
         let element = this.shadowRoot.getElementById("filechooser");
         if (element != null) {
             this.filechooser = new Dropzone(
@@ -126,11 +132,11 @@ export class MappingInputProvider extends HTMLElement {
                     input: inputElement,
                     minLength: -1,
                     source: {
-                        local: ["Blue", "Green"],
-                        //prefetch: {
-                        //    url: 'http://localhost:8095/api/v1/mappingAdministration/',
-                        //    done: false
-                        //},
+                        //local: ["Blue", "Green"], // for local testing
+                        prefetch: {
+                            url: 'http://localhost:8095/api/v1/mappingAdministration/',
+                            done: false
+                        },
                         identifier: "mappingId",
                         // templates: {
                         //   suggestion: (item, resultSet) => (
