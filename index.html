@@ -1,22 +1,14 @@
 <!DOCTYPE html>
-<link rel="stylesheet" href="./node_modules/typeahead-standalone/dist/basic.css" />
-<script src="./node_modules/typeahead-standalone/dist/typeahead-standalone.js"></script>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script type="module" src="/src/main.ts"></script>
+    <title>Web component test</title>
+  </head>
 
-<meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<script type="module" src="app.js"></script>
-<main>
-  <form class="dropzone" id="my-form" action="/"></form>
-  <pre id="output"></pre>
-  <h1> Choose a Mapping </h1>
-  
-    <div>
-    <input type="search" id="searchInput" autocomplete="on" placeholder="Search...">
-    </div>
-  
-</main>
-
-</body>
+  <body>
+    <mapping-input></mapping-input>
+  </body>
 </html>
