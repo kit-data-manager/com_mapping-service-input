@@ -132,12 +132,25 @@ export class MappingInputProvider extends HTMLElement {
             done: false,
           },
           identifier: "mappingId",
+        },
+          onSubmit: (e, selectedSuggestion) => {
+
+            // const query = e.target.value;
+            // alert(`input -> ${query}, eventType -> ${e.type}`);
+            if (selectedSuggestion) {
+              alert('Selected suggestion - ' + JSON.stringify(selectedSuggestion));
+            
+            }
+          }
+
           // templates: {
           //   suggestion: (item, resultSet) => (
           //     `<span class="preview" style="background-color: ${item.hash}"></span>
           //     <div class="text">${item.label}</div>`)
           // }
-        },
+          
+          
+        
       });
     } else {
       console.error("Could not find element for mapping selector (typeahead).");
