@@ -125,6 +125,7 @@ export class MappingInputProvider extends HTMLElement {
       this.mappingchooser = typeahead({
         input: inputElement,
         minLength: -1,
+        highlight: true, 
         source: {
           //local: ["Blue", "Green"], // for local testing
           prefetch: {
@@ -132,6 +133,21 @@ export class MappingInputProvider extends HTMLElement {
             done: false,
           },
           identifier: "mappingId",
+          transform: (data) => {return data.map(item => ({
+            // title : item.title,
+            mappingId: `${item.mappingId} -  ${item.description}`
+          }))
+
+          },
+          // dataTokens:["description"],
+          identity: (suggestion) => `${suggestion.mappingId}${suggestion.mappingId}`
+        },
+        display: (item, event) => {
+          if (event) {
+            // do something
+            // alert("event type is - " + event.type);
+          }
+          return `${item.mappingId}  -  ${item.description}`;
         },
           onSubmit: (e, selectedSuggestion) => {
 
