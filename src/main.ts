@@ -121,52 +121,48 @@ export class MappingInputProvider extends HTMLElement {
     let inputElement: HTMLInputElement = <HTMLInputElement>(
       this.shadowRoot.getElementById("mappingchooser")
     );
+
     if (inputElement != null) {
       this.mappingchooser = typeahead({
         input: inputElement,
         minLength: -1,
-        highlight: true, 
+        highlight: true,
         source: {
           //local: ["Blue", "Green"], // for local testing
           prefetch: {
             url: "http://localhost:8095/api/v1/mappingAdministration/",
             done: false,
           },
-          identifier: "mappingId",
-          transform: (data) => {return data.map(item => ({
-            // title : item.title,
-            mappingId: `${item.mappingId} -  ${item.description}`
-          }))
-
-          },
-          // dataTokens:["description"],
-          identity: (suggestion) => `${suggestion.mappingId}${suggestion.mappingId}`
-        },
-        display: (item, event) => {
-          if (event) {
-            // do something
-            // alert("event type is - " + event.type);
-          }
-          return `${item.mappingId}  -  ${item.description}`;
-        },
-          onSubmit: (e, selectedSuggestion) => {
-
-            // const query = e.target.value;
-            // alert(`input -> ${query}, eventType -> ${e.type}`);
-            if (selectedSuggestion) {
-              alert('Selected suggestion - ' + JSON.stringify(selectedSuggestion));
-            
+          identifier: "name",
+          transform: (data) => {
+            for (let item of data) {
+              if (typeof item == "object") {
+                item.name = `${item.mappingId} - ${item.description}`
+              }
             }
-          }
+            return data
+          },
+          dataTokens: ["description"],
+          identity: (suggestion) => `${suggestion.mappingId}${suggestion.description}`
+        },
+        onSubmit: (e, selectedSuggestion) => {
 
-          // templates: {
-          //   suggestion: (item, resultSet) => (
-          //     `<span class="preview" style="background-color: ${item.hash}"></span>
-          //     <div class="text">${item.label}</div>`)
-          // }
-          
-          
-        
+          // const query = e.target.value;
+          // alert(`input -> ${query}, eventType -> ${e.type}`);
+          if (selectedSuggestion) {
+            alert('Selected suggestion - ' + JSON.stringify(selectedSuggestion));
+
+          }
+        }
+
+        // templates: {
+        //   suggestion: (item, resultSet) => (
+        //     `<span class="preview" style="background-color: ${item.hash}"></span>
+        //     <div class="text">${item.label}</div>`)
+        // }
+
+
+
       });
     } else {
       console.error("Could not find element for mapping selector (typeahead).");
@@ -215,3 +211,42 @@ window.customElements.define(
   "mapping-input",
   MappingInputProvider /* { extends: "ul" } */
 );
+const downloadButton = document.getElementById("download-button");
+
+
+async function downloadOutput(input1: string, input2: number): Promise<void> {
+  try {
+    // make a request to the API with the inputs
+    const response = await fetch(`https://example-api.com?input1=${input1}&input2=${input2}`);
+
+    // handle the response
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.statusText}`);
+    }
+
+    // parse the response body as text
+    const responseBody = await response.text();
+
+    // create a new blob object from the response body
+    const blob = new Blob([responseBody], { type: "text/plain" });
+
+    // create a new URL object from the blob
+    const url = URL.createObjectURL(blob);
+
+    // create a new anchor element and set its attributes
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", "output.txt");
+
+    // simulate a click on the anchor element to trigger the download
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    // release the URL object
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error(error);
+    // handle any errors that occur during the fetch request
+  }
+}
