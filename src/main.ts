@@ -145,6 +145,7 @@ export class MappingInputProvider extends HTMLElement {
           dataTokens: ["description"],
           identity: (suggestion) => `${suggestion.mappingId}${suggestion.description}`
         },
+        preventSubmit: true,
         onSubmit: (e, selectedSuggestion) => {
 
           // const query = e.target.value;
@@ -199,6 +200,18 @@ export class MappingInputProvider extends HTMLElement {
     this.filechooser;
     this.testingFileChooser;
     this.mappingchooser;
+  }
+
+  executeMapping() {
+    // figure out the selected/current mapping ID
+    let inputElement: HTMLInputElement = <HTMLInputElement>(
+      this.shadowRoot.getElementById("mappingchooser")
+    );
+    console.log(inputElement.textContent)
+    // figure out the selected/current file content (for the request body later)
+    // do the request (fetch & stuff)
+    // read result from response
+    // return the response (json)
   }
 }
 
