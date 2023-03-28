@@ -1,13 +1,7 @@
 import templateContent from "./template.html?raw";
-
-import Dropzone from "dropzone";
-import dropzoneCSS from "dropzone/dist/dropzone.css?inline";
-
-// Filepond https://pqina.nl/filepond/ as an alternative to dropzone?
 import * as FilePondLib from "filepond";
 import { FilePond, FilePondOptions } from "filepond";
 import filepondCSS from "filepond/dist/filepond.min.css?inline";
-
 import typeahead from "typeahead-standalone";
 import { Dictionary, typeaheadResult } from "typeahead-standalone/dist/types";
 import typeaheadCSS from "typeahead-standalone/dist/basic.css?inline";
@@ -22,6 +16,7 @@ export class MappingInputProvider extends HTMLElement {
 
   // --- Attributes accessible from the HTML tag:
   baseUrl: URL = new URL("http://localhost:8090");
+  selectedMappingId: unknown;
   // ---
 
   // --- Helper methods
@@ -46,8 +41,6 @@ export class MappingInputProvider extends HTMLElement {
     super();
     // Create Shadow DOM
     this.shadowRoot = this.attachShadow({ mode: "open" });
-
-    this.addCssContent(dropzoneCSS);
     this.addCssContent(filepondCSS);
     this.addCssContent(typeaheadCSS);
 
@@ -98,37 +91,15 @@ export class MappingInputProvider extends HTMLElement {
       options.maxFiles = 1;
       this.testingFileChooser = FilePondLib.create(filepondElement, options);
     }
-
-    let element = this.shadowRoot.getElementById("filechooser");
-    if (element != null) {
-      this.filechooser = new Dropzone(element, {
-        dictDefaultMessage:
-          "Drag and drop your input file here or click this field to choose a file.",
-        maxFiles: 1,
-        autoProcessQueue: false,
-        paramName: "document",
-      }).on("addedfile", (file) => {
-        // Add an info line about the added file for each file.
-        let output = this.shadowRoot.querySelector("#output");
-        if (output) {
-          output.innerHTML += `File added: ${file.name}`;
-        }
-      });
-    } else {
-      console.error("Could not find element for file chooser (Dropzone).");
-    }
-
     let inputElement: HTMLInputElement = <HTMLInputElement>(
       this.shadowRoot.getElementById("mappingchooser")
     );
-
     if (inputElement != null) {
       this.mappingchooser = typeahead({
         input: inputElement,
         minLength: -1,
         highlight: true,
         source: {
-          //local: ["Blue", "Green"], // for local testing
           prefetch: {
             url: "http://localhost:8095/api/v1/mappingAdministration/",
             done: false,
@@ -147,23 +118,13 @@ export class MappingInputProvider extends HTMLElement {
         },
         preventSubmit: true,
         onSubmit: (e, selectedSuggestion) => {
-
-          // const query = e.target.value;
-          // alert(`input -> ${query}, eventType -> ${e.type}`);
           if (selectedSuggestion) {
+            this.selectedMappingId = selectedSuggestion.mappingId;
+            console.log(this.selectedMappingId);
             alert('Selected suggestion - ' + JSON.stringify(selectedSuggestion));
 
           }
-        }
-
-        // templates: {
-        //   suggestion: (item, resultSet) => (
-        //     `<span class="preview" style="background-color: ${item.hash}"></span>
-        //     <div class="text">${item.label}</div>`)
-        // }
-
-
-
+        },
       });
     } else {
       console.error("Could not find element for mapping selector (typeahead).");
@@ -201,20 +162,135 @@ export class MappingInputProvider extends HTMLElement {
     this.testingFileChooser;
     this.mappingchooser;
   }
+  // Steps to for executemapping function
+  // figure out the selected/current mapping ID
+  // use the selected mapping ID to execute the mapping
+  // figure out the selected/current file content (for the request body later)
+  // do the request (fetch & stuff)
+  // read result from response
+  // return the response (json)
 
+  // Using HttpRequest : Working fine
   executeMapping() {
-    // figure out the selected/current mapping ID
     let inputElement: HTMLInputElement = <HTMLInputElement>(
       this.shadowRoot.getElementById("mappingchooser")
     );
-    console.log(inputElement.textContent)
-    // figure out the selected/current file content (for the request body later)
-    // do the request (fetch & stuff)
-    // read result from response
-    // return the response (json)
+    console.log(inputElement);
+    const selectedValue = inputElement && inputElement.value ? inputElement.value : null;
+    const selectedMappingId = selectedValue ? selectedValue.split("-")[0].trim() : null;
+    console.log(selectedMappingId);
+
+    if (this.testingFileChooser != null) {
+      const uploadedFile = this.testingFileChooser.getFile();
+      if (uploadedFile != null) {
+
+        const execUrl = "http://localhost:8095/api/v1/mappingExecution/" + selectedMappingId;
+        const apiUrl = "http://localhost:8095/api/v1/mappingAdministration/" + selectedMappingId;
+        const file = uploadedFile.file
+
+        let formData = new FormData()
+        if (file != undefined) {
+          console.log(file.size)
+          formData.append("document", file)
+        }
+
+        const http = new XMLHttpRequest();
+        http.open("POST", execUrl)
+        http.send(formData)
+        http.onload = () => {
+          console.log('responseText :: ' + http.responseText)
+          const downloadHTTP = new XMLHttpRequest();
+          downloadHTTP.open("GET", apiUrl);
+          downloadHTTP.send();
+          downloadHTTP.onload = () => {
+            const element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(http.responseText));
+            element.setAttribute('download', "result.json");
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+          }
+        }
+        http.onprogress = () => {
+          console.log("In progress...")
+        }
+        http.ontimeout = () => {
+          console.log(http.responseText)
+          console.log("TIMEOUT")
+        }
+        http.onerror = () => {
+          console.log(http.responseText)
+          console.log("ERROR")
+        }
+      };
+    }
   }
+
 }
 
+// Alternate solution using Fetch not working
+//   executeMapping() {
+
+//     if (this.testingFileChooser != null) {
+//       const uploadedFile = this.testingFileChooser.getFile();
+//       if (uploadedFile != null) {
+//         const file = uploadedFile.file;
+//         const reader = new FileReader();
+//         const execUrl = "http://localhost:8095/api/v1/mappingExecution/";
+//         // reader.readAsDataURL(file);
+//         reader.readAsBinaryString(file)
+//         reader.onloadend = () => {
+//           const fileData = reader.result as String;
+
+//           console.log('value of filedata' +fileData)
+//           const fileName = uploadedFile.filename;
+//           const mimeType = uploadedFile.fileType;
+//           const requestOptions = {
+//             method: "POST",
+//             headers: { "Content-Type": "application/json" },
+//             body: JSON.stringify({ fileData, fileName,mimeType}),
+
+//           };
+//           fetch(execUrl + selectedMappingId, requestOptions)
+//           .then((response) => {
+//             response.json();
+//             console.log(response.status)
+//           console.log('response' +response)})
+//             // .then((response) => response.json()).catch((error) => console.error(error));
+
+//               // const downloadHTTP = new XMLHttpRequest();
+//               // const apiUrl = "http://localhost:8095/api/v1/mappingAdministration/";
+//               // const responseOptions = {
+//               //   method: "GET",
+//               //   // headers: { "Content-Type": "multipart/form-data" }
+//               // };
+//               // fetch( apiUrl + selectedMappingId, responseOptions)
+
+//               // downloadHTTP.open("GET", apiUrl + selectedMappingId);
+//               // downloadHTTP.send();
+//               // downloadHTTP.onload = () => {
+//               //   const element = document.createElement("a");
+//               //   element.setAttribute(
+//               //     "href",
+//               //     "data:text/plain;charset=utf-8," +
+//               //       encodeURIComponent(downloadHTTP.responseText)
+//               //   );
+//               //   console.log(downloadHTTP.getAllResponseHeaders)
+//               //   element.setAttribute("download", "result.json");
+//               //   element.style.display = "none";
+//               //   document.body.appendChild(element);
+//               //   element.click();
+//               //   document.body.removeChild(element);
+//               // };
+
+
+//         };
+//       }
+//     }
+
+//   }
+// }
 // Custom Elements:
 // If you inherit e.g. from HTMLUListElement instead of HTMLElement,
 // you need to write some additional boilerplate here (see commented code).
@@ -224,42 +300,3 @@ window.customElements.define(
   "mapping-input",
   MappingInputProvider /* { extends: "ul" } */
 );
-const downloadButton = document.getElementById("download-button");
-
-
-async function downloadOutput(input1: string, input2: number): Promise<void> {
-  try {
-    // make a request to the API with the inputs
-    const response = await fetch(`https://example-api.com?input1=${input1}&input2=${input2}`);
-
-    // handle the response
-    if (!response.ok) {
-      throw new Error(`Failed to fetch data: ${response.statusText}`);
-    }
-
-    // parse the response body as text
-    const responseBody = await response.text();
-
-    // create a new blob object from the response body
-    const blob = new Blob([responseBody], { type: "text/plain" });
-
-    // create a new URL object from the blob
-    const url = URL.createObjectURL(blob);
-
-    // create a new anchor element and set its attributes
-    const link = document.createElement("a");
-    link.setAttribute("href", url);
-    link.setAttribute("download", "output.txt");
-
-    // simulate a click on the anchor element to trigger the download
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-    // release the URL object
-    URL.revokeObjectURL(url);
-  } catch (error) {
-    console.error(error);
-    // handle any errors that occur during the fetch request
-  }
-}
