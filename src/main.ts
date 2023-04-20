@@ -108,7 +108,7 @@ export class MappingInputProvider extends HTMLElement {
           transform: (data) => {
             for (let item of data) {
               if (typeof item == "object") {
-                item.name = `${item.mappingId} - ${item.description}`
+                item.name = item.description ? `${item.mappingId} - ${item.description}` : item.mappingId;
               }
             }
             return data
@@ -199,10 +199,13 @@ export class MappingInputProvider extends HTMLElement {
         http.send(formData)
         http.onload = () => {
           console.log('responseText :: ' + http.responseText)
+          //chk useless code
           const downloadHTTP = new XMLHttpRequest();
           downloadHTTP.open("GET", apiUrl);
           downloadHTTP.send();
+          //chk useless code
           downloadHTTP.onload = () => {
+
             const element = document.createElement('a');
             element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(http.responseText));
             element.setAttribute('download', "result.json");
@@ -210,12 +213,14 @@ export class MappingInputProvider extends HTMLElement {
             document.body.appendChild(element);
             element.click();
             document.body.removeChild(element);
+         
           }
         }
         http.onprogress = () => {
           console.log("In progress...")
         }
         http.ontimeout = () => {
+          //give call back to outside of component to inform that somthing went wrong 
           console.log(http.responseText)
           console.log("TIMEOUT")
         }
