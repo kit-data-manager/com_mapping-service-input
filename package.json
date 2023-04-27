@@ -1,7 +1,24 @@
 {
-  "name": "mapping_component",
-  "version": "1.0.0",
+  "name": "@kit-data-manager/mapping-service-input",
   "description": "This component contains an option to select an input file form which metadata needs to be extracted, an option to search from available mapping schemas whose name will be self explainatory .",
+  "author": "Ajay",
+  "license": "Apache License 2.0",
+  "version": "0.5.0",
+  "private": false,
+  "keywords": [
+    "metadata",
+    "JSON",
+    "mapping",
+    "form"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kit-data-manager/com_mapping-service-input"
+  },
+  "bugs": {
+    "url": "https://github.com/kit-data-manager/com_mapping-service-input/issues"
+  },
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "dev": "vite",
@@ -10,8 +27,6 @@
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
-  "author": "Ajay",
-  "license": "ISC",
   "devDependencies": {
     "@types/dropzone": "^5.7.4",
     "@types/tabulator-tables": "^5.4.7",
