@@ -6,7 +6,12 @@ import typeahead from "typeahead-standalone";
 import { Dictionary, typeaheadResult } from "typeahead-standalone/dist/types";
 import typeaheadCSS from "typeahead-standalone/dist/basic.css?inline";
 
-const ATTRIBUTES: string[] = ["base-url"];
+import { RowComponent, TabulatorFull as Tabulator } from 'tabulator-tables';
+type OnRowClickInstructions = string | ((event: UIEvent, row: RowComponent) => void)
+
+const ATTRIBUTES: string[] = ["base-url"
+,"onrowclick"
+];
 
 export class MappingInputProvider extends HTMLElement {
   shadowRoot: ShadowRoot;
@@ -14,9 +19,32 @@ export class MappingInputProvider extends HTMLElement {
   private filechooser: Dropzone | null = null;
   private mappingchooser: typeaheadResult<Dictionary> | null = null;
 
+  private table: Tabulator | null = null;
+
   // --- Attributes accessible from the HTML tag:
   baseUrl: URL = new URL("http://localhost:8090");
   selectedMappingId: unknown;
+
+  _onRowClick: OnRowClickInstructions = (_event, row) => {
+    window.open(
+      'https://kit-data-manager.github.io/fairdoscope/?pid=' + row.getData().pid,
+      '_blank'
+    )
+  }
+  set onRowClick(newValue: OnRowClickInstructions) {
+    this._onRowClick = newValue;
+    if (this.table != null) {
+      this.table.on("rowClick", this.rowEventHandler);
+    }
+  }
+  
+  rowEventHandler = (event: UIEvent, row: RowComponent) => {
+    if (typeof this._onRowClick == 'string') {
+      eval(this._onRowClick)
+    } else if (typeof this._onRowClick == 'function') {
+      this._onRowClick(event, row)
+    }
+  }
   // ---
 
   // --- Helper methods
@@ -101,20 +129,21 @@ export class MappingInputProvider extends HTMLElement {
         highlight: true,
         source: {
           prefetch: {
-            url: "http://localhost:8095/api/v1/mappingAdministration/",
+            // url: "http://localhost:8095/api/v1/mappingAdministration/",
+            url: "https://metarepo.nffa.eu/mapping-service/api/v1/mappingAdministration/",
             done: false,
           },
           identifier: "name",
           transform: (data) => {
             for (let item of data) {
               if (typeof item == "object") {
-                item.name = item.description ? `${item.mappingId} - ${item.description}` : item.mappingId;
+                item.name = item.title ? `${item.mappingId} - ${item.title}` : item.mappingId;
               }
             }
             return data
           },
           dataTokens: ["description"],
-          identity: (suggestion) => `${suggestion.mappingId}${suggestion.description}`
+          identity: (suggestion) => `${suggestion.mappingId}${suggestion.title}`
         },
         preventSubmit: true,
         onSubmit: (e, selectedSuggestion) => {
@@ -171,7 +200,49 @@ export class MappingInputProvider extends HTMLElement {
   // return the response (json)
 
   // Using HttpRequest : Working fine
-  executeMapping() {
+  // executeMapping() {
+  //   let inputElement: HTMLInputElement = <HTMLInputElement>(
+  //     this.shadowRoot.getElementById("mappingchooser")
+  //   );
+  //   console.log(inputElement);
+  //   const selectedValue = inputElement && inputElement.value ? inputElement.value : null;
+  //   const selectedMappingId = selectedValue ? selectedValue.split("-")[0].trim() : null;
+  //   console.log(selectedMappingId);
+  
+  //   if (this.testingFileChooser != null) {
+  //     const uploadedFile = this.testingFileChooser.getFile();
+  //     if (uploadedFile != null) {
+  //       // const execUrl = "http://localhost:8095/api/v1/mappingExecution/" + selectedMappingId;
+  //       const execUrl = "https://metarepo.nffa.eu/mapping-service/api/v1/mappingExecution/" + selectedMappingId;
+  //       // const apiUrl = "http://localhost:8095/api/v1/mappingAdministration/" + selectedMappingId;
+  //       const file = uploadedFile.file;
+  
+  //       let formData = new FormData();
+  //       if (file != undefined) {
+  //         console.log(file.size)
+  //         formData.append("document", file);
+  //       }
+  
+  //       return fetch(execUrl, {
+  //         method: "POST",
+  //         body: formData
+  //       })
+  //       .then(response => response.json())
+  //       .then(responseJson => {
+  //         console.log('responseJson :: ', responseJson)
+  //         return responseJson;
+  //       })
+  //       .catch(error => {
+  //         console.log(error)
+  //         console.log("ERROR")
+  //         return null;
+  //       });
+  //     };
+  //   }
+  //   return null;
+  // }
+  
+  async executeMapping(): Promise<void> {
     let inputElement: HTMLInputElement = <HTMLInputElement>(
       this.shadowRoot.getElementById("mappingchooser")
     );
@@ -179,123 +250,45 @@ export class MappingInputProvider extends HTMLElement {
     const selectedValue = inputElement && inputElement.value ? inputElement.value : null;
     const selectedMappingId = selectedValue ? selectedValue.split("-")[0].trim() : null;
     console.log(selectedMappingId);
-
+  
     if (this.testingFileChooser != null) {
       const uploadedFile = this.testingFileChooser.getFile();
       if (uploadedFile != null) {
-
-        const execUrl = "http://localhost:8095/api/v1/mappingExecution/" + selectedMappingId;
-        const apiUrl = "http://localhost:8095/api/v1/mappingAdministration/" + selectedMappingId;
-        const file = uploadedFile.file
-
-        let formData = new FormData()
+  
+        // const execUrl = "http://localhost:8095/api/v1/mappingExecution/" + selectedMappingId;
+        const execUrl = "https://metarepo.nffa.eu/mapping-service/api/v1/mappingExecution/" + selectedMappingId;
+        // const apiUrl = "http://localhost:8095/api/v1/mappingAdministration/" + selectedMappingId;
+        const file = uploadedFile.file;
+  
+        let formData = new FormData();
         if (file != undefined) {
           console.log(file.size)
-          formData.append("document", file)
+          formData.append("document", file);
         }
-
-        const http = new XMLHttpRequest();
-        http.open("POST", execUrl)
-        http.send(formData)
-        http.onload = () => {
-          console.log('responseText :: ' + http.responseText)
-          //chk useless code
-          const downloadHTTP = new XMLHttpRequest();
-          downloadHTTP.open("GET", apiUrl);
-          downloadHTTP.send();
-          //chk useless code
-          downloadHTTP.onload = () => {
-
-            const element = document.createElement('a');
-            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(http.responseText));
-            element.setAttribute('download', "result.json");
-            element.style.display = 'none';
-            document.body.appendChild(element);
-            element.click();
-            document.body.removeChild(element);
-         
-          }
-        }
-        http.onprogress = () => {
-          console.log("In progress...")
-        }
-        http.ontimeout = () => {
-          //give call back to outside of component to inform that somthing went wrong 
-          console.log(http.responseText)
-          console.log("TIMEOUT")
-        }
-        http.onerror = () => {
-          console.log(http.responseText)
-          console.log("ERROR")
-        }
-      };
+        fetch(execUrl, {
+          method: "POST",
+          body: formData
+        })
+          .then(response => response.json())
+          .then(responseJson => {
+            console.log('responseJson :: ', responseJson);
+              const element = document.createElement('a');
+              element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(responseJson)));
+              element.setAttribute('download', "result.json");
+              element.style.display = 'none';
+              document.body.appendChild(element);
+              element.click();
+              document.body.removeChild(element);
+          })
+          .catch(error => {
+            console.log(error);
+            console.log("ERROR");
+          });
+      }
     }
   }
-
+  
 }
-
-// Alternate solution using Fetch not working
-//   executeMapping() {
-
-//     if (this.testingFileChooser != null) {
-//       const uploadedFile = this.testingFileChooser.getFile();
-//       if (uploadedFile != null) {
-//         const file = uploadedFile.file;
-//         const reader = new FileReader();
-//         const execUrl = "http://localhost:8095/api/v1/mappingExecution/";
-//         // reader.readAsDataURL(file);
-//         reader.readAsBinaryString(file)
-//         reader.onloadend = () => {
-//           const fileData = reader.result as String;
-
-//           console.log('value of filedata' +fileData)
-//           const fileName = uploadedFile.filename;
-//           const mimeType = uploadedFile.fileType;
-//           const requestOptions = {
-//             method: "POST",
-//             headers: { "Content-Type": "application/json" },
-//             body: JSON.stringify({ fileData, fileName,mimeType}),
-
-//           };
-//           fetch(execUrl + selectedMappingId, requestOptions)
-//           .then((response) => {
-//             response.json();
-//             console.log(response.status)
-//           console.log('response' +response)})
-//             // .then((response) => response.json()).catch((error) => console.error(error));
-
-//               // const downloadHTTP = new XMLHttpRequest();
-//               // const apiUrl = "http://localhost:8095/api/v1/mappingAdministration/";
-//               // const responseOptions = {
-//               //   method: "GET",
-//               //   // headers: { "Content-Type": "multipart/form-data" }
-//               // };
-//               // fetch( apiUrl + selectedMappingId, responseOptions)
-
-//               // downloadHTTP.open("GET", apiUrl + selectedMappingId);
-//               // downloadHTTP.send();
-//               // downloadHTTP.onload = () => {
-//               //   const element = document.createElement("a");
-//               //   element.setAttribute(
-//               //     "href",
-//               //     "data:text/plain;charset=utf-8," +
-//               //       encodeURIComponent(downloadHTTP.responseText)
-//               //   );
-//               //   console.log(downloadHTTP.getAllResponseHeaders)
-//               //   element.setAttribute("download", "result.json");
-//               //   element.style.display = "none";
-//               //   document.body.appendChild(element);
-//               //   element.click();
-//               //   document.body.removeChild(element);
-//               // };
-
-
-//         };
-//       }
-//     }
-
-//   }
-// }
 // Custom Elements:
 // If you inherit e.g. from HTMLUListElement instead of HTMLElement,
 // you need to write some additional boilerplate here (see commented code).
