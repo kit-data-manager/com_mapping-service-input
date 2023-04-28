@@ -6,11 +6,8 @@ import typeahead from "typeahead-standalone";
 import { Dictionary, typeaheadResult } from "typeahead-standalone/dist/types";
 import typeaheadCSS from "typeahead-standalone/dist/basic.css?inline";
 
-import { RowComponent, TabulatorFull as Tabulator } from 'tabulator-tables';
-type OnRowClickInstructions = string | ((event: UIEvent, row: RowComponent) => void)
 
 const ATTRIBUTES: string[] = ["base-url"
-,"onrowclick"
 ];
 
 export class MappingInputProvider extends HTMLElement {
@@ -19,32 +16,10 @@ export class MappingInputProvider extends HTMLElement {
   private filechooser: Dropzone | null = null;
   private mappingchooser: typeaheadResult<Dictionary> | null = null;
 
-  private table: Tabulator | null = null;
-
   // --- Attributes accessible from the HTML tag:
-  baseUrl: URL = new URL("http://localhost:8090");
+  baseUrl: URL = new URL("http://localhost:8095/");
   selectedMappingId: unknown;
 
-  _onRowClick: OnRowClickInstructions = (_event, row) => {
-    window.open(
-      'https://kit-data-manager.github.io/fairdoscope/?pid=' + row.getData().pid,
-      '_blank'
-    )
-  }
-  set onRowClick(newValue: OnRowClickInstructions) {
-    this._onRowClick = newValue;
-    if (this.table != null) {
-      this.table.on("rowClick", this.rowEventHandler);
-    }
-  }
-  
-  rowEventHandler = (event: UIEvent, row: RowComponent) => {
-    if (typeof this._onRowClick == 'string') {
-      eval(this._onRowClick)
-    } else if (typeof this._onRowClick == 'function') {
-      this._onRowClick(event, row)
-    }
-  }
   // ---
 
   // --- Helper methods
@@ -130,7 +105,8 @@ export class MappingInputProvider extends HTMLElement {
         source: {
           prefetch: {
             // url: "http://localhost:8095/api/v1/mappingAdministration/",
-            url: "https://metarepo.nffa.eu/mapping-service/api/v1/mappingAdministration/",
+            // url: "https://metarepo.nffa.eu/mapping-service/api/v1/mappingAdministration/",
+            url: this.baseUrl.toString() + "api/v1/mappingAdministration/",
             done: false,
           },
           identifier: "name",
@@ -241,8 +217,54 @@ export class MappingInputProvider extends HTMLElement {
   //   }
   //   return null;
   // }
+  // figure out download option 
   
-  async executeMapping(): Promise<void> {
+  // async executeMapping(): Promise<void> {
+  //   let inputElement: HTMLInputElement = <HTMLInputElement>(
+  //     this.shadowRoot.getElementById("mappingchooser")
+  //   );
+  //   console.log(inputElement);
+  //   const selectedValue = inputElement && inputElement.value ? inputElement.value : null;
+  //   const selectedMappingId = selectedValue ? selectedValue.split("-")[0].trim() : null;
+  //   console.log(selectedMappingId);
+  
+  //   if (this.testingFileChooser != null) {
+  //     const uploadedFile = this.testingFileChooser.getFile();
+  //     if (uploadedFile != null) {
+  
+  //       // const execUrl = "http://localhost:8095/api/v1/mappingExecution/" + selectedMappingId;
+  //       const execUrl = "https://metarepo.nffa.eu/mapping-service/api/v1/mappingExecution/" + selectedMappingId;
+  //       // const apiUrl = "http://localhost:8095/api/v1/mappingAdministration/" + selectedMappingId;
+  //       const file = uploadedFile.file;
+  
+  //       let formData = new FormData();
+  //       if (file != undefined) {
+  //         console.log(file.size)
+  //         formData.append("document", file);
+  //       }
+  //       fetch(execUrl, {
+  //         method: "POST",
+  //         body: formData
+  //       })
+  //         .then(response => response.json())
+  //         .then(responseJson => {
+  //           console.log('responseJson :: ', responseJson);
+  //             const element = document.createElement('a');
+  //             element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(responseJson)));
+  //             element.setAttribute('download', "result.json");
+  //             element.style.display = 'none';
+  //             document.body.appendChild(element);
+  //             element.click();
+  //             document.body.removeChild(element);
+  //         })
+  //         .catch(error => {
+  //           console.log(error);
+  //           console.log("ERROR");
+  //         });
+  //     }
+  //   }
+  // }
+  async executeMapping(): Promise<any> {
     let inputElement: HTMLInputElement = <HTMLInputElement>(
       this.shadowRoot.getElementById("mappingchooser")
     );
@@ -250,42 +272,35 @@ export class MappingInputProvider extends HTMLElement {
     const selectedValue = inputElement && inputElement.value ? inputElement.value : null;
     const selectedMappingId = selectedValue ? selectedValue.split("-")[0].trim() : null;
     console.log(selectedMappingId);
-  
+
     if (this.testingFileChooser != null) {
       const uploadedFile = this.testingFileChooser.getFile();
       if (uploadedFile != null) {
-  
+
         // const execUrl = "http://localhost:8095/api/v1/mappingExecution/" + selectedMappingId;
-        const execUrl = "https://metarepo.nffa.eu/mapping-service/api/v1/mappingExecution/" + selectedMappingId;
+        // const execUrl = "https://metarepo.nffa.eu/mapping-service/api/v1/mappingExecution/" + selectedMappingId;
+        const execUrl = this.baseUrl.toString() + "api/v1/mappingExecution/" + selectedMappingId;
         // const apiUrl = "http://localhost:8095/api/v1/mappingAdministration/" + selectedMappingId;
         const file = uploadedFile.file;
-  
+
         let formData = new FormData();
         if (file != undefined) {
           console.log(file.size)
           formData.append("document", file);
         }
-        fetch(execUrl, {
+        return fetch(execUrl, {
           method: "POST",
           body: formData
-        })
-          .then(response => response.json())
-          .then(responseJson => {
-            console.log('responseJson :: ', responseJson);
-              const element = document.createElement('a');
-              element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(responseJson)));
-              element.setAttribute('download', "result.json");
-              element.style.display = 'none';
-              document.body.appendChild(element);
-              element.click();
-              document.body.removeChild(element);
-          })
-          .catch(error => {
-            console.log(error);
-            console.log("ERROR");
-          });
+        }).then(response =>response.json())
+        .then(responseJson => {console.log('responseJson :: ', responseJson);
+        return responseJson; })
+        // .then(response => { console.log('responseJson :: ', response.json());
+        // return response.json() });
       }
     }
+  }
+
+  triggerDownload(mappedItem: Promise<any>) {
   }
   
 }
