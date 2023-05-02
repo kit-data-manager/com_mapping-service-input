@@ -1,81 +1,66 @@
-    input {
-    padding: 0.625rem; /* 10px / 16px = 0.625rem */
-    font-size: 0.875rem; /* 14px / 16px = 0.875rem */
-    border: 1px solid #ccc;
-    border-radius: 0.25rem; /* 4px / 16px = 0.25rem */
-    width: 23.625rem; /* 378px / 16px = 23.625rem */
-  }
-  
+input {
+  padding: 0.625rem;
+  font-size: 0.875rem;
+  border: 1px solid #ccc;
+  border-radius: 0.25rem;
+  width: 23.625rem;
+}
 
 #fileUpload {
-  padding: 0.625rem; /* converted from 10px */
+  padding: 0.625rem;
   width: auto;
-  margin: 2.5rem auto 4rem; /* converted from 50px auto and 40px */
+  margin: 2.5rem auto 4rem;
   border: none;
   background-color: #d9eaea;
-  box-shadow: 0 0.125rem 0.3125rem rgba(0, 0, 0, 0.3); /* converted from 0 2px 5px rgba(0, 0, 0, 0.3) */
+  box-shadow: 0 0.125rem 0.3125rem rgba(0, 0, 0, 0.3);
   transition: all 0.3s ease;
-  font-size: 1.5625rem; /* converted from 25px */
+  font-size: 1.5625rem;
   color: #f80abd;
-  width: calc(90% - 2.125rem); /* converted from 34em */
+  width: calc(90% - 2.125rem);
   margin-left: auto;
   margin-right: auto;
-  height: 9.375rem; /* converted from 150px */
+  height: 9.375rem;
   text-align-last: center;
 }
 
-  
 button {
   display: block;
   margin: 0 auto;
-  border-radius: 0.3125rem; /* converted from 5px */
-  font-size: 1.125rem; /* converted from 18px */
-  padding: 0.625rem 1.25rem; /* converted from 10px 20px */
+  border-radius: 0.3125rem;
+  font-size: 1.125rem;
+  padding: 0.625rem 1.25rem;
   background-color: #346599;
   color: #fff;
-  box-shadow: 0 0.125rem 0.3125rem rgba(0, 0, 0, 0.3); /* converted from 0 2px 5px rgba(0, 0, 0, 0.3) */
-  transition: all 0.3s ease;
-  margin-top: auto;
-}
-
-button {
-  display: block;
-  margin: 0 auto;
-  border-radius: 0.3125rem; /* converted from 5px */
-  font-size: 1.125rem; /* converted from 18px */
-  padding: 0.625rem 1.25rem; /* converted from 10px 20px */
-  background-color: #346599;
-  color: #fff;
-  box-shadow: 0 0.125rem 0.3125rem rgba(0, 0, 0, 0.3); /* converted from 0 2px 5px rgba(0, 0, 0, 0.3) */
+  box-shadow: 0 0.125rem 0.3125rem rgba(0, 0, 0, 0.3);
   transition: all 0.3s ease;
   margin-top: auto;
 }
 
 button:hover {
   background-color: #317ed0;
-  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.3); /* converted from 0 4px 8px rgba(0, 0, 0, 0.3) */
-  transform: translateY(-0.125rem); /* converted from -2px */
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.3);
+  transform: translateY(-0.125rem);
 }
 
 .mapping-container {
-  max-width: 37.5rem; /* converted from 600px */
+  max-width: 37.5rem;
   margin: 0 auto;
   text-align: center;
 }
 
 .mapping-title {
-  font-size: 2rem; /* converted from 32px */
-  margin-bottom: 1.25rem; /* converted from 20px */
+  font-size: 2rem;
+  margin-bottom: 1.25rem;
 }
 
 .mapping-input-container {
   display: flex;
   align-items: center;
-  max-width: 25rem; /* converted from 400px */
+  max-width: 25rem;
   margin: 0 auto;
   background-color: #fff;
-  border-radius: 3.125rem; /* converted from 50px */
-  padding: 0.625rem 1.25rem; /* converted from 10px 20px */
+  border-radius: 3.125rem;
+  padding: 0.625rem 1.25rem;
   box-shadow: 0 0.125rem 0.3125rem rgba(0, 0, 0, 0.3);
 }
 
@@ -83,7 +68,6 @@ button:hover {
   flex: 1;
   border: none;
   outline: none;
-  font-size: 1.125rem; /* converted from 18px */
+  font-size: 1.125rem;
   padding: 0.625rem;
 }
-
