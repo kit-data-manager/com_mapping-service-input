@@ -11,7 +11,6 @@ const ATTRIBUTES: any = ["base-url"
 export class MappingInputProvider extends HTMLElement {
   shadowRoot: ShadowRoot;
   private testingFileChooser: FilePond | null = null;
-  private filechooser: Dropzone | null = null;
   private mappingchooser: typeaheadResult<Dictionary> | null = null;
 
   selectedMappingId: unknown;
@@ -156,7 +155,6 @@ export class MappingInputProvider extends HTMLElement {
       this.baseUrl = newValue;
       this.connectedCallback();
     }
-    this.filechooser;
     this.testingFileChooser;
     this.mappingchooser;
   }
