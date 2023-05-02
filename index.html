@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <link rel="stylesheet" href="src/style.css">
   <meta charset="UTF-8" />
@@ -8,26 +7,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script type="module" src="/src/main.ts"></script>
   <title>Mapping Service</title>
-
-  <header>
-    <div class="logo-container">
-      <!-- <img src="your-logo.png" alt="Your Website Logo" class="logo"> -->
-      <h1 class="tagline">Mapping Service GUI</h1>
-    </div>
-  </header>
-  
 </head>
 <body>
-  <mapping-input base-url="http://localhost:8095/" id="input-component"></mapping-input>
-  <!-- <mapping-service base-url="http://localhost:8090/"> -->
+  <mapping-input base-url="https://metarepo.nffa.eu/mapping-service/" id="input-component"></mapping-input>
   <a class="btn btn-success col-auto me-3" id="downloadButton" onclick="" hidden>
   </a>
   <div class="row align-items-center ms-1">
+    <!-- <button type="submit" class="btn btn-primary col-auto me-3" id="submit"
+    
+      onclick="var component = document.getElementById('input-component');
+      component.executeMapping().then(responseJson => triggerDownload(responseJson))">Map document
+    </button> -->
+
     <button type="submit" class="btn btn-primary col-auto me-3" id="submit"
-      onclick="document.getElementById('input-component').executeMapping()">Map document
-    </button>
+    onclick="
+    var component =document.getElementById('input-component');
+    component.executeMapping()">Map document
+  </button>
+
   </div>
-
 </body>
-
 </html>

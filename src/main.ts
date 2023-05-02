@@ -6,19 +6,17 @@ import typeahead from "typeahead-standalone";
 import { Dictionary, typeaheadResult } from "typeahead-standalone/dist/types";
 import typeaheadCSS from "typeahead-standalone/dist/basic.css?inline";
 
-
-const ATTRIBUTES: string[] = ["base-url"
+const ATTRIBUTES: any = ["base-url"
 ];
-
 export class MappingInputProvider extends HTMLElement {
   shadowRoot: ShadowRoot;
   private testingFileChooser: FilePond | null = null;
   private filechooser: Dropzone | null = null;
   private mappingchooser: typeaheadResult<Dictionary> | null = null;
 
-  // --- Attributes accessible from the HTML tag:
-  baseUrl: URL = new URL("http://localhost:8095/");
   selectedMappingId: unknown;
+  // --- Attribute accessible from the HTML tag:
+  baseUrl: URL = new URL("http://localhost:8095/");
 
   // ---
 
@@ -104,8 +102,6 @@ export class MappingInputProvider extends HTMLElement {
         highlight: true,
         source: {
           prefetch: {
-            // url: "http://localhost:8095/api/v1/mappingAdministration/",
-            // url: "https://metarepo.nffa.eu/mapping-service/api/v1/mappingAdministration/",
             url: this.baseUrl.toString() + "api/v1/mappingAdministration/",
             done: false,
           },
@@ -167,120 +163,24 @@ export class MappingInputProvider extends HTMLElement {
     this.testingFileChooser;
     this.mappingchooser;
   }
-  // Steps to for executemapping function
-  // figure out the selected/current mapping ID
-  // use the selected mapping ID to execute the mapping
-  // figure out the selected/current file content (for the request body later)
-  // do the request (fetch & stuff)
-  // read result from response
-  // return the response (json)
-
-  // Using HttpRequest : Working fine
-  // executeMapping() {
-  //   let inputElement: HTMLInputElement = <HTMLInputElement>(
-  //     this.shadowRoot.getElementById("mappingchooser")
-  //   );
-  //   console.log(inputElement);
-  //   const selectedValue = inputElement && inputElement.value ? inputElement.value : null;
-  //   const selectedMappingId = selectedValue ? selectedValue.split("-")[0].trim() : null;
-  //   console.log(selectedMappingId);
-  
-  //   if (this.testingFileChooser != null) {
-  //     const uploadedFile = this.testingFileChooser.getFile();
-  //     if (uploadedFile != null) {
-  //       // const execUrl = "http://localhost:8095/api/v1/mappingExecution/" + selectedMappingId;
-  //       const execUrl = "https://metarepo.nffa.eu/mapping-service/api/v1/mappingExecution/" + selectedMappingId;
-  //       // const apiUrl = "http://localhost:8095/api/v1/mappingAdministration/" + selectedMappingId;
-  //       const file = uploadedFile.file;
-  
-  //       let formData = new FormData();
-  //       if (file != undefined) {
-  //         console.log(file.size)
-  //         formData.append("document", file);
-  //       }
-  
-  //       return fetch(execUrl, {
-  //         method: "POST",
-  //         body: formData
-  //       })
-  //       .then(response => response.json())
-  //       .then(responseJson => {
-  //         console.log('responseJson :: ', responseJson)
-  //         return responseJson;
-  //       })
-  //       .catch(error => {
-  //         console.log(error)
-  //         console.log("ERROR")
-  //         return null;
-  //       });
-  //     };
-  //   }
-  //   return null;
-  // }
-  // figure out download option 
-  
-  // async executeMapping(): Promise<void> {
-  //   let inputElement: HTMLInputElement = <HTMLInputElement>(
-  //     this.shadowRoot.getElementById("mappingchooser")
-  //   );
-  //   console.log(inputElement);
-  //   const selectedValue = inputElement && inputElement.value ? inputElement.value : null;
-  //   const selectedMappingId = selectedValue ? selectedValue.split("-")[0].trim() : null;
-  //   console.log(selectedMappingId);
-  
-  //   if (this.testingFileChooser != null) {
-  //     const uploadedFile = this.testingFileChooser.getFile();
-  //     if (uploadedFile != null) {
-  
-  //       // const execUrl = "http://localhost:8095/api/v1/mappingExecution/" + selectedMappingId;
-  //       const execUrl = "https://metarepo.nffa.eu/mapping-service/api/v1/mappingExecution/" + selectedMappingId;
-  //       // const apiUrl = "http://localhost:8095/api/v1/mappingAdministration/" + selectedMappingId;
-  //       const file = uploadedFile.file;
-  
-  //       let formData = new FormData();
-  //       if (file != undefined) {
-  //         console.log(file.size)
-  //         formData.append("document", file);
-  //       }
-  //       fetch(execUrl, {
-  //         method: "POST",
-  //         body: formData
-  //       })
-  //         .then(response => response.json())
-  //         .then(responseJson => {
-  //           console.log('responseJson :: ', responseJson);
-  //             const element = document.createElement('a');
-  //             element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(responseJson)));
-  //             element.setAttribute('download', "result.json");
-  //             element.style.display = 'none';
-  //             document.body.appendChild(element);
-  //             element.click();
-  //             document.body.removeChild(element);
-  //         })
-  //         .catch(error => {
-  //           console.log(error);
-  //           console.log("ERROR");
-  //         });
-  //     }
-  //   }
-  // }
-  async executeMapping(): Promise<any> {
+  /**
+   * Optional boolean parameter download used in executeMapping method, user can choose to download the result.
+   * It will help user chose between true, false or no parameter
+   * No parameter will be considered as false
+   * executeMapping method will return promise of type any
+  */
+  executeMapping(): Promise<any>;
+  async executeMapping(download: boolean = false): Promise<any> {
     let inputElement: HTMLInputElement = <HTMLInputElement>(
       this.shadowRoot.getElementById("mappingchooser")
     );
-    console.log(inputElement);
     const selectedValue = inputElement && inputElement.value ? inputElement.value : null;
     const selectedMappingId = selectedValue ? selectedValue.split("-")[0].trim() : null;
-    console.log(selectedMappingId);
 
     if (this.testingFileChooser != null) {
       const uploadedFile = this.testingFileChooser.getFile();
       if (uploadedFile != null) {
-
-        // const execUrl = "http://localhost:8095/api/v1/mappingExecution/" + selectedMappingId;
-        // const execUrl = "https://metarepo.nffa.eu/mapping-service/api/v1/mappingExecution/" + selectedMappingId;
         const execUrl = this.baseUrl.toString() + "api/v1/mappingExecution/" + selectedMappingId;
-        // const apiUrl = "http://localhost:8095/api/v1/mappingAdministration/" + selectedMappingId;
         const file = uploadedFile.file;
 
         let formData = new FormData();
@@ -291,19 +191,32 @@ export class MappingInputProvider extends HTMLElement {
         return fetch(execUrl, {
           method: "POST",
           body: formData
-        }).then(response =>response.json())
-        .then(responseJson => {console.log('responseJson :: ', responseJson);
-        return responseJson; })
-        // .then(response => { console.log('responseJson :: ', response.json());
-        // return response.json() });
+        }).then(response => response.json())
+          .then(responseJson => {
+            console.log('responseJson :: ', responseJson);
+            console.log("execute method download == " + download)
+            if (download) {
+              this.triggerDownload(responseJson);
+              console.log("execute method download in if(true )== " + download)
+            }
+          })
       }
     }
   }
-
-  triggerDownload(mappedItem: Promise<any>) {
+  /**
+   * In case if download is required triggerDownload can be used
+   */
+  triggerDownload(response: Promise<any>) {
+    const element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(response)));
+    element.setAttribute('download', "result.json");
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
   }
-  
 }
+
 // Custom Elements:
 // If you inherit e.g. from HTMLUListElement instead of HTMLElement,
 // you need to write some additional boilerplate here (see commented code).
