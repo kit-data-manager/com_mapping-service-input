@@ -121,9 +121,6 @@ export class MappingInputProvider extends HTMLElement {
         onSubmit: (e, selectedSuggestion) => {
           if (selectedSuggestion) {
             this.selectedMappingId = selectedSuggestion.mappingId;
-            console.log(this.selectedMappingId);
-            alert('Selected suggestion - ' + JSON.stringify(selectedSuggestion));
-
           }
         },
       });
@@ -194,10 +191,8 @@ export class MappingInputProvider extends HTMLElement {
         }).then(response => response.json())
           .then(responseJson => {
             console.log('responseJson :: ', responseJson);
-            console.log("execute method download == " + download)
             if (download) {
               this.triggerDownload(responseJson);
-              console.log("execute method download in if(true )== " + download)
             }
           })
       }
