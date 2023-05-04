@@ -12,14 +12,11 @@
 
 <body>
   <mapping-input base-url="https://metarepo.nffa.eu/mapping-service/" id="input-component"></mapping-input>
-  <a class="btn btn-success col-auto me-3" id="downloadButton" onclick="" hidden>
-  </a>
   <div class="row align-items-center ms-1">
     <button type="submit" class="btn btn-primary col-auto me-3" id="submit" onclick="
     var component =document.getElementById('input-component');
-    component.executeMapping()">Map document
+    component.executeMapping(true)">Map document
     </button>
-
   </div>
 </body>
 

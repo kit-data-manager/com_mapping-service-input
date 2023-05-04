@@ -28,8 +28,7 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "@types/dropzone": "^5.7.4",
-    "@types/tabulator-tables": "^5.4.7",
+    "@types/typeahead": "^0.11.32",
     "@typescript-eslint/eslint-plugin": "^5.52.0",
     "eslint": "^8.34.0",
     "eslint-config-prettier": "^8.6.0",
@@ -42,9 +41,7 @@
     "vite": "^4.1.1"
   },
   "dependencies": {
-    "dropzone": "^6.0.0-beta.2",
     "filepond": "^4.30.4",
-    "tabulator-tables": "^5.4.4",
     "typeahead-standalone": "^4.17.0"
   }
 }

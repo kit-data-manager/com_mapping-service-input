@@ -6,16 +6,15 @@ import typeahead from "typeahead-standalone";
 import { Dictionary, typeaheadResult } from "typeahead-standalone/dist/types";
 import typeaheadCSS from "typeahead-standalone/dist/basic.css?inline";
 
-const ATTRIBUTES: any = ["base-url"
+const ATTRIBUTES: string[] = ["base-url"
 ];
 export class MappingInputProvider extends HTMLElement {
   shadowRoot: ShadowRoot;
   private testingFileChooser: FilePond | null = null;
   private mappingchooser: typeaheadResult<Dictionary> | null = null;
-
-  selectedMappingId: unknown;
+  selectedMappingId: String | null = null;
   // --- Attribute accessible from the HTML tag:
-  baseUrl: URL = new URL("http://localhost:8095/");
+  baseUrl: URL = new URL("http://localhost:8090/");
 
   // ---
 
@@ -118,7 +117,7 @@ export class MappingInputProvider extends HTMLElement {
         },
         preventSubmit: true,
         onSubmit: (e, selectedSuggestion) => {
-          if (selectedSuggestion) {
+          if (typeof selectedSuggestion?.mappingId === "string") {
             this.selectedMappingId = selectedSuggestion.mappingId;
           }
         },
@@ -169,9 +168,8 @@ export class MappingInputProvider extends HTMLElement {
     let inputElement: HTMLInputElement = <HTMLInputElement>(
       this.shadowRoot.getElementById("mappingchooser")
     );
-    const selectedValue = inputElement && inputElement.value ? inputElement.value : null;
-    const selectedMappingId = selectedValue ? selectedValue.split("-")[0].trim() : null;
-
+    const selectedValue = inputElement?.value;
+    const selectedMappingId = selectedValue?.split("-")[0].trim();
     if (this.testingFileChooser != null) {
       const uploadedFile = this.testingFileChooser.getFile();
       if (uploadedFile != null) {
@@ -180,7 +178,6 @@ export class MappingInputProvider extends HTMLElement {
 
         let formData = new FormData();
         if (file != undefined) {
-          console.log(file.size)
           formData.append("document", file);
         }
         return fetch(execUrl, {
@@ -188,7 +185,6 @@ export class MappingInputProvider extends HTMLElement {
           body: formData
         }).then(response => response.json())
           .then(responseJson => {
-            console.log('responseJson :: ', responseJson);
             if (download) {
               this.triggerDownload(responseJson);
             }
