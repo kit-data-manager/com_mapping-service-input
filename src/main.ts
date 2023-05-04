@@ -12,7 +12,6 @@ export class MappingInputProvider extends HTMLElement {
   shadowRoot: ShadowRoot;
   private testingFileChooser: FilePond | null = null;
   private mappingchooser: typeaheadResult<Dictionary> | null = null;
-  selectedMappingId: String | null = null;
   // --- Attribute accessible from the HTML tag:
   baseUrl: URL = new URL("http://localhost:8090/");
 
@@ -116,11 +115,6 @@ export class MappingInputProvider extends HTMLElement {
           identity: (suggestion) => `${suggestion.mappingId}${suggestion.title}`
         },
         preventSubmit: true,
-        onSubmit: (e, selectedSuggestion) => {
-          if (typeof selectedSuggestion?.mappingId === "string") {
-            this.selectedMappingId = selectedSuggestion.mappingId;
-          }
-        },
       });
     } else {
       console.error("Could not find element for mapping selector (typeahead).");
@@ -200,9 +194,9 @@ export class MappingInputProvider extends HTMLElement {
     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(response)));
     element.setAttribute('download', "result.json");
     element.style.display = 'none';
-    document.body.appendChild(element);
+    this.shadowRoot.appendChild;
     element.click();
-    document.body.removeChild(element);
+    this.shadowRoot.removeChild;
   }
 }
 
