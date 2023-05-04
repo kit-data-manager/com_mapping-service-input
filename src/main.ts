@@ -1,27 +1,20 @@
 import templateContent from "./template.html?raw";
-
-import Dropzone from "dropzone";
-import dropzoneCSS from "dropzone/dist/dropzone.css?inline";
-
-// Filepond https://pqina.nl/filepond/ as an alternative to dropzone?
 import * as FilePondLib from "filepond";
 import { FilePond, FilePondOptions } from "filepond";
 import filepondCSS from "filepond/dist/filepond.min.css?inline";
-
 import typeahead from "typeahead-standalone";
 import { Dictionary, typeaheadResult } from "typeahead-standalone/dist/types";
 import typeaheadCSS from "typeahead-standalone/dist/basic.css?inline";
 
-const ATTRIBUTES: string[] = ["base-url"];
-
+const ATTRIBUTES: string[] = ["base-url"
+];
 export class MappingInputProvider extends HTMLElement {
   shadowRoot: ShadowRoot;
   private testingFileChooser: FilePond | null = null;
-  private filechooser: Dropzone | null = null;
   private mappingchooser: typeaheadResult<Dictionary> | null = null;
+  // --- Attribute accessible from the HTML tag:
+  baseUrl: URL = new URL("http://localhost:8090/");
 
-  // --- Attributes accessible from the HTML tag:
-  baseUrl: URL = new URL("http://localhost:8090");
   // ---
 
   // --- Helper methods
@@ -46,8 +39,6 @@ export class MappingInputProvider extends HTMLElement {
     super();
     // Create Shadow DOM
     this.shadowRoot = this.attachShadow({ mode: "open" });
-
-    this.addCssContent(dropzoneCSS);
     this.addCssContent(filepondCSS);
     this.addCssContent(typeaheadCSS);
 
@@ -98,26 +89,6 @@ export class MappingInputProvider extends HTMLElement {
       options.maxFiles = 1;
       this.testingFileChooser = FilePondLib.create(filepondElement, options);
     }
-
-    let element = this.shadowRoot.getElementById("filechooser");
-    if (element != null) {
-      this.filechooser = new Dropzone(element, {
-        dictDefaultMessage:
-          "Drag and drop your input file here or click this field to choose a file.",
-        maxFiles: 1,
-        autoProcessQueue: false,
-        paramName: "document",
-      }).on("addedfile", (file) => {
-        // Add an info line about the added file for each file.
-        let output = this.shadowRoot.querySelector("#output");
-        if (output) {
-          output.innerHTML += `File added: ${file.name}`;
-        }
-      });
-    } else {
-      console.error("Could not find element for file chooser (Dropzone).");
-    }
-
     let inputElement: HTMLInputElement = <HTMLInputElement>(
       this.shadowRoot.getElementById("mappingchooser")
     );
@@ -125,19 +96,25 @@ export class MappingInputProvider extends HTMLElement {
       this.mappingchooser = typeahead({
         input: inputElement,
         minLength: -1,
+        highlight: true,
         source: {
-          //local: ["Blue", "Green"], // for local testing
           prefetch: {
-            url: "http://localhost:8095/api/v1/mappingAdministration/",
+            url: this.baseUrl.toString() + "api/v1/mappingAdministration/",
             done: false,
           },
-          identifier: "mappingId",
-          // templates: {
-          //   suggestion: (item, resultSet) => (
-          //     `<span class="preview" style="background-color: ${item.hash}"></span>
-          //     <div class="text">${item.label}</div>`)
-          // }
+          identifier: "name",
+          transform: (data) => {
+            for (let item of data) {
+              if (typeof item == "object") {
+                item.name = item.title ? `${item.mappingId} - ${item.title}` : item.mappingId;
+              }
+            }
+            return data
+          },
+          dataTokens: ["description"],
+          identity: (suggestion) => `${suggestion.mappingId}${suggestion.title}`
         },
+        preventSubmit: true,
       });
     } else {
       console.error("Could not find element for mapping selector (typeahead).");
@@ -171,9 +148,55 @@ export class MappingInputProvider extends HTMLElement {
       this.baseUrl = newValue;
       this.connectedCallback();
     }
-    this.filechooser;
     this.testingFileChooser;
     this.mappingchooser;
+  }
+  /**
+   * Optional boolean parameter download used in executeMapping method, user can choose to download the result.
+   * It will help user chose between true, false or no parameter
+   * No parameter will be considered as false
+   * executeMapping method will return promise of type any
+  */
+  executeMapping(): Promise<any>;
+  async executeMapping(download: boolean = false): Promise<any> {
+    let inputElement: HTMLInputElement = <HTMLInputElement>(
+      this.shadowRoot.getElementById("mappingchooser")
+    );
+    const selectedValue = inputElement?.value;
+    const selectedMappingId = selectedValue?.split("-")[0].trim();
+    if (this.testingFileChooser != null) {
+      const uploadedFile = this.testingFileChooser.getFile();
+      if (uploadedFile != null) {
+        const execUrl = this.baseUrl.toString() + "api/v1/mappingExecution/" + selectedMappingId;
+        const file = uploadedFile.file;
+
+        let formData = new FormData();
+        if (file != undefined) {
+          formData.append("document", file);
+        }
+        return fetch(execUrl, {
+          method: "POST",
+          body: formData
+        }).then(response => response.json())
+          .then(responseJson => {
+            if (download) {
+              this.triggerDownload(responseJson);
+            }
+          })
+      }
+    }
+  }
+  /**
+   * In case if download is required triggerDownload can be used
+   */
+  triggerDownload(response: Promise<any>) {
+    const element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(response)));
+    element.setAttribute('download', "result.json");
+    element.style.display = 'none';
+    this.shadowRoot.appendChild;
+    element.click();
+    this.shadowRoot.removeChild;
   }
 }
 

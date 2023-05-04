@@ -1,14 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script type="module" src="/src/main.ts"></script>
-    <title>Web component test</title>
-  </head>
 
-  <body>
-    <mapping-input></mapping-input>
-  </body>
+<head>
+  <link rel="stylesheet" href="src/style.css">
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script type="module" src="/src/main.ts"></script>
+  <title>Mapping Service</title>
+</head>
+
+<body>
+  <mapping-input base-url="https://metarepo.nffa.eu/mapping-service/" id="input-component"></mapping-input>
+  <div class="row align-items-center ms-1">
+    <button type="submit" class="btn btn-primary col-auto me-3" id="submit" onclick="
+    var component =document.getElementById('input-component');
+    component.executeMapping(true)">Map document
+    </button>
+  </div>
+</body>
+
 </html>

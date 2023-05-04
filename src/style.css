@@ -1,82 +1,73 @@
-body {
-  font-family: helvetica, arial, sans-serif;
-  padding: 6rem;
+input {
+  padding: 0.625rem;
+  font-size: 0.875rem;
+  border: 1px solid #ccc;
+  border-radius: 0.25rem;
+  width: 23.625rem;
 }
-main {
-  max-width: 40rem;
-  margin: 0 auto;
+
+#fileUpload {
+  padding: 0.625rem;
+  width: auto;
+  margin: 2.5rem auto 4rem;
+  border: none;
+  background-color: #d9eaea;
+  box-shadow: 0 0.125rem 0.3125rem rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  font-size: 1.5625rem;
+  color: #f80abd;
+  width: calc(90% - 2.125rem);
+  margin-left: auto;
+  margin-right: auto;
+  height: 9.375rem;
+  text-align-last: center;
 }
-.dropzone {
-  border: 4px solid rgb(114, 109, 96);
-  color: rgb(230, 231, 223);
-  margin: 1rem 0;
-  background-color: rgb(138, 166, 167);
-}
-small {
+
+button {
   display: block;
+  margin: 0 auto;
+  border-radius: 0.3125rem;
+  font-size: 1.125rem;
+  padding: 0.625rem 1.25rem;
+  background-color: #346599;
+  color: #fff;
+  box-shadow: 0 0.125rem 0.3125rem rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  margin-top: auto;
+}
+
+button:hover {
+  background-color: #317ed0;
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.3);
+  transform: translateY(-0.125rem);
+}
+
+.mapping-container {
+  max-width: 37.5rem;
+  margin: 0 auto;
   text-align: center;
 }
-/* #searchInput {
-    width: 640px;
-    height: 40px;
-    font-size: 20px;
-    padding: 10px;
+
+.mapping-title {
+  font-size: 2rem;
+  margin-bottom: 1.25rem;
 }
-  h1 {
-    font-size: 1em;
-    display: block;
-    font-size: 1.5em;
-    margin-block-start: 0.83em;
-    margin-block-end: 0.83em;
-    margin-inline-start: 0px;
-    margin-inline-end: 0px;
-    font-weight: bold;
-  }
-  #myDropzone {
-    width: 500px;
-    height: 400px;
-    border: 2px solid #333;
-    border-radius: 10px;
-    text-align: center;
-    line-height: 400px;
-    font-size: 20px;
-    color: #333;
-    background-color: #f2f2f2;
-  }
-  
-  #myDropzone.dz-drag-hover {
-    border-color: #0087F7;
-    color: #0087F7;
-  }
-  
-  #myDropzone .dz-message {
-    margin: 0;
-  }
-  
-  #myDropzone .dz-preview {
-    width: 150px;
-    height: 150px;
-    margin: 10px;
-    display: inline-block;
-    float: left;
-    border: 2px solid #333;
-    border-radius: 10px;
-    position: relative;
-  }
-  
-  #myDropzone .dz-preview .dz-remove {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    font-size: 20px;
-    color: #333;
-    background-color: #f2f2f2;
-    padding: 5px 10px;
-    border-radius: 10px;
-  }
-  
-  #myDropzone .dz-preview .dz-remove:hover {
-    color: #0087F7;
-    background-color: #fff;
-  }
-   */
+
+.mapping-input-container {
+  display: flex;
+  align-items: center;
+  max-width: 25rem;
+  margin: 0 auto;
+  background-color: #fff;
+  border-radius: 3.125rem;
+  padding: 0.625rem 1.25rem;
+  box-shadow: 0 0.125rem 0.3125rem rgba(0, 0, 0, 0.3);
+}
+
+.mapping-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 1.125rem;
+  padding: 0.625rem;
+}

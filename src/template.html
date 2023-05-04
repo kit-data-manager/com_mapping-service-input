@@ -1,28 +1,8 @@
-<p>File upload via "filepond":</p>
-
-<input type="file" />
-
-<p>File upload via "dropzone":</p>
-
-<!-- Adding inline styles in here is a bit hacky,
-    but until we make it possible to include CSS from the outside of the web component,
-    I think this should be fine. -->
-<style>
-  .dropzone {
-    border: 4px solid rgb(114, 109, 96);
-    color: rgb(230, 231, 223);
-    margin: 1rem 0;
-    background-color: rgb(138, 166, 167);
-  }
-</style>
-
-<form class="dropzone" id="filechooser" action="/"></form>
-<p id="output"></p>
-
-<div>
-  <h1>Choose a Mapping</h1>
-  <input
-    id="mappingchooser"
-    placeholder="Select or search your mapping here."
-  />
+<link rel="stylesheet" href="src/style.css">
+<div class="mapping-container">
+	<h2 class="mapping-title">Choose a Mapping</h2>
+	<div class="mapping-input-container">
+		<input id="mappingchooser" class="mapping-input" placeholder="Select or search your mapping here." />
+	</div>
 </div>
+<input type="file" id="fileUpload" />
