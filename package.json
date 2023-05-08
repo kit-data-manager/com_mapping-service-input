@@ -19,7 +19,7 @@
     "url": "https://github.com/kit-data-manager/com_mapping-service-input/issues"
   },
   "type": "module",
-  "main": "index.js",
+  "main": "./dist/com_mapping-service-input.umd.js",
   "scripts": {
     "dev": "vite",
     "format": "prettier --write .",

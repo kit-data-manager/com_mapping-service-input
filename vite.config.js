@@ -11,9 +11,9 @@ export default defineConfig({
     sourcemap: true,
     lib: {
       entry: resolve(__dirname, "src/main.ts"),
-      name: "webcomponent_typed-pid-maker_pid-list",
+      name: "com_mapping-service-input",
       formats: ["es", "umd"],
-      fileName: (format) => `typid-known-pids-table.${format}.js`,
+      fileName: (format) => `com_mapping-service-input.${format}.js`,
     },
     rollupOptions: {},
   },
