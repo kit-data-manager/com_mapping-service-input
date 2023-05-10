@@ -10,8 +10,6 @@ This is a webcomponent to use in HTML or more complex web projects.
 If the dependency is up set properly (instructions will follow), the component can be used like this:
 
 ```html
-<head>
-</head>
 <body>
     <!-- use the component !-->
     <mapping-input base-url="http://localhost:8090/" id="input-component"></mapping-input>
