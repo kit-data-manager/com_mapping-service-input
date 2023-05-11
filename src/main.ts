@@ -3,7 +3,6 @@ import * as FilePondLib from "filepond";
 import { FilePond, FilePondOptions } from "filepond";
 import filepondCSS from "filepond/dist/filepond.min.css?inline";
 import typeahead from "typeahead-standalone";
-import { Dictionary, typeaheadResult } from "typeahead-standalone/dist/types";
 import typeaheadCSS from "typeahead-standalone/dist/basic.css?inline";
 import customCSS from './style.css?inline';
 
@@ -11,7 +10,6 @@ const ATTRIBUTES: string[] = ["base-url"];
 export class MappingInputProvider extends HTMLElement {
   shadowRoot: ShadowRoot;
   private testingFileChooser: FilePond | null = null;
-  private mappingchooser: typeaheadResult<Dictionary> | null = null;
   // --- Attribute accessible from the HTML tag:
   baseUrl: URL = new URL("http://localhost:8090/");
   // ---
@@ -92,7 +90,7 @@ export class MappingInputProvider extends HTMLElement {
       this.shadowRoot.getElementById("mappingchooser")
     );
     if (inputElement != null) {
-      this.mappingchooser = typeahead({
+      typeahead({
         input: inputElement,
         minLength: -1,
         highlight: true,
