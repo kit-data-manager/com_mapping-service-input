@@ -5,6 +5,7 @@ import filepondCSS from "filepond/dist/filepond.min.css?inline";
 import typeahead from "typeahead-standalone";
 import { Dictionary, typeaheadResult } from "typeahead-standalone/dist/types";
 import typeaheadCSS from "typeahead-standalone/dist/basic.css?inline";
+import customCSS from './style.css?inline';
 
 const ATTRIBUTES: string[] = ["base-url"
 ];
@@ -41,6 +42,7 @@ export class MappingInputProvider extends HTMLElement {
     this.shadowRoot = this.attachShadow({ mode: "open" });
     this.addCssContent(filepondCSS);
     this.addCssContent(typeaheadCSS);
+    this.addCssContent(customCSS);
 
     {
       // Apply HTML Template to shadow DOM
