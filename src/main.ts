@@ -194,9 +194,9 @@ export class MappingInputProvider extends HTMLElement {
     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(response)));
     element.setAttribute('download', "result.json");
     element.style.display = 'none';
-    this.shadowRoot.appendChild;
+    this.shadowRoot.appendChild(element);
     element.click();
-    this.shadowRoot.removeChild;
+    this.shadowRoot.removeChild(element);
   }
 }
 
