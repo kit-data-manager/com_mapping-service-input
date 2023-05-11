@@ -7,16 +7,15 @@ import { Dictionary, typeaheadResult } from "typeahead-standalone/dist/types";
 import typeaheadCSS from "typeahead-standalone/dist/basic.css?inline";
 import customCSS from './style.css?inline';
 
-const ATTRIBUTES: string[] = ["base-url"
-];
+const ATTRIBUTES: string[] = ["base-url"];
 export class MappingInputProvider extends HTMLElement {
   shadowRoot: ShadowRoot;
   private testingFileChooser: FilePond | null = null;
   private mappingchooser: typeaheadResult<Dictionary> | null = null;
   // --- Attribute accessible from the HTML tag:
   baseUrl: URL = new URL("http://localhost:8090/");
-
   // ---
+
 
   // --- Helper methods
   addCssContent(css: string): void {
@@ -44,12 +43,10 @@ export class MappingInputProvider extends HTMLElement {
     this.addCssContent(typeaheadCSS);
     this.addCssContent(customCSS);
 
-    {
-      // Apply HTML Template to shadow DOM
-      const template = document.createElement("template");
-      template.innerHTML = templateContent;
-      this.shadowRoot.append(template.content.cloneNode(true));
-    }
+    // Apply HTML Template to shadow DOM
+    const template = document.createElement("template");
+    template.innerHTML = templateContent;
+    this.shadowRoot.append(template.content.cloneNode(true));
   }
 
   /**
