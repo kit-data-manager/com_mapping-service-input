@@ -148,9 +148,8 @@ export class MappingInputProvider extends HTMLElement {
       this.baseUrl = newValue;
       this.connectedCallback();
     }
-    this.testingFileChooser;
-    this.mappingchooser;
   }
+
   /**
    * Optional boolean parameter download used in executeMapping method, user can choose to download the result.
    * It will help user chose between true, false or no parameter
@@ -186,6 +185,7 @@ export class MappingInputProvider extends HTMLElement {
       }
     }
   }
+
   /**
    * In case if download is required triggerDownload can be used
    */
