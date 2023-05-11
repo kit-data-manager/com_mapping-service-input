@@ -28,7 +28,6 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "@types/typeahead": "^0.11.32",
     "@typescript-eslint/eslint-plugin": "^5.52.0",
     "eslint": "^8.34.0",
     "eslint-config-prettier": "^8.6.0",
