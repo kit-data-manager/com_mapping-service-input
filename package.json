@@ -20,6 +20,16 @@
   },
   "type": "module",
   "main": "./dist/com_mapping-service-input.umd.js",
+  "module": "./dist/com_mapping-service-input.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/com_mapping-service-input.es.js",
+      "require": "./dist/com_mapping-service-input.umd.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "dev": "vite",
     "format": "prettier --write .",

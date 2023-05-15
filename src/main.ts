@@ -7,7 +7,7 @@ import typeaheadCSS from "typeahead-standalone/dist/basic.css?inline";
 import customCSS from './style.css?inline';
 
 const ATTRIBUTES: string[] = ["base-url"];
-export class MappingInputProvider extends HTMLElement {
+class MappingInputProvider extends HTMLElement {
   shadowRoot: ShadowRoot;
   private testingFileChooser: FilePond | null = null;
   // --- Attribute accessible from the HTML tag:
