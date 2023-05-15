@@ -3,7 +3,7 @@
   "description": "This component contains an option to select an input file form which metadata needs to be extracted, an option to search from available mapping schemas whose name will be self explainatory .",
   "author": "Ajay",
   "license": "Apache License 2.0",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "private": false,
   "keywords": [
     "metadata",
@@ -20,6 +20,16 @@
   },
   "type": "module",
   "main": "./dist/com_mapping-service-input.umd.js",
+  "module": "./dist/com_mapping-service-input.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/com_mapping-service-input.es.js",
+      "require": "./dist/com_mapping-service-input.umd.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "dev": "vite",
     "format": "prettier --write .",
@@ -28,7 +38,6 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "@types/typeahead": "^0.11.32",
     "@typescript-eslint/eslint-plugin": "^5.52.0",
     "eslint": "^8.34.0",
     "eslint-config-prettier": "^8.6.0",
@@ -37,8 +46,8 @@
     "eslint-plugin-n": "^15.6.1",
     "eslint-plugin-promise": "^6.1.1",
     "prettier": "2.8.4",
-    "typescript": "^4.9.5",
-    "vite": "^4.1.1"
+    "typescript": "^5.0.2",
+    "vite": "^4.3.5"
   },
   "dependencies": {
     "filepond": "^4.30.4",

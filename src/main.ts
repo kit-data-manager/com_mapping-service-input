@@ -3,19 +3,17 @@ import * as FilePondLib from "filepond";
 import { FilePond, FilePondOptions } from "filepond";
 import filepondCSS from "filepond/dist/filepond.min.css?inline";
 import typeahead from "typeahead-standalone";
-import { Dictionary, typeaheadResult } from "typeahead-standalone/dist/types";
 import typeaheadCSS from "typeahead-standalone/dist/basic.css?inline";
+import customCSS from './style.css?inline';
 
-const ATTRIBUTES: string[] = ["base-url"
-];
-export class MappingInputProvider extends HTMLElement {
+const ATTRIBUTES: string[] = ["base-url"];
+class MappingInputProvider extends HTMLElement {
   shadowRoot: ShadowRoot;
   private testingFileChooser: FilePond | null = null;
-  private mappingchooser: typeaheadResult<Dictionary> | null = null;
   // --- Attribute accessible from the HTML tag:
   baseUrl: URL = new URL("http://localhost:8090/");
-
   // ---
+
 
   // --- Helper methods
   addCssContent(css: string): void {
@@ -41,13 +39,12 @@ export class MappingInputProvider extends HTMLElement {
     this.shadowRoot = this.attachShadow({ mode: "open" });
     this.addCssContent(filepondCSS);
     this.addCssContent(typeaheadCSS);
+    this.addCssContent(customCSS);
 
-    {
-      // Apply HTML Template to shadow DOM
-      const template = document.createElement("template");
-      template.innerHTML = templateContent;
-      this.shadowRoot.append(template.content.cloneNode(true));
-    }
+    // Apply HTML Template to shadow DOM
+    const template = document.createElement("template");
+    template.innerHTML = templateContent;
+    this.shadowRoot.append(template.content.cloneNode(true));
   }
 
   /**
@@ -93,7 +90,7 @@ export class MappingInputProvider extends HTMLElement {
       this.shadowRoot.getElementById("mappingchooser")
     );
     if (inputElement != null) {
-      this.mappingchooser = typeahead({
+      typeahead({
         input: inputElement,
         minLength: -1,
         highlight: true,
@@ -148,9 +145,8 @@ export class MappingInputProvider extends HTMLElement {
       this.baseUrl = newValue;
       this.connectedCallback();
     }
-    this.testingFileChooser;
-    this.mappingchooser;
   }
+
   /**
    * Optional boolean parameter download used in executeMapping method, user can choose to download the result.
    * It will help user chose between true, false or no parameter
@@ -186,6 +182,7 @@ export class MappingInputProvider extends HTMLElement {
       }
     }
   }
+
   /**
    * In case if download is required triggerDownload can be used
    */
@@ -194,9 +191,9 @@ export class MappingInputProvider extends HTMLElement {
     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(response)));
     element.setAttribute('download', "result.json");
     element.style.display = 'none';
-    this.shadowRoot.appendChild;
+    this.shadowRoot.appendChild(element);
     element.click();
-    this.shadowRoot.removeChild;
+    this.shadowRoot.removeChild(element);
   }
 }
 
