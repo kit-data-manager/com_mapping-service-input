@@ -3,7 +3,7 @@
   "description": "This component contains an option to select an input file form which metadata needs to be extracted, an option to search from available mapping schemas whose name will be self explainatory .",
   "author": "Ajay",
   "license": "Apache License 2.0",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "private": false,
   "keywords": [
     "metadata",
