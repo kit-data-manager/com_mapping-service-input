@@ -155,6 +155,7 @@ class MappingInputProvider extends HTMLElement {
   */
   executeMapping(): Promise<any>;
   async executeMapping(download: boolean = false): Promise<any> {
+    document.body.style.cursor = "progress";
     let inputElement: HTMLInputElement = <HTMLInputElement>(
       this.shadowRoot.getElementById("mappingchooser")
     );
@@ -163,37 +164,51 @@ class MappingInputProvider extends HTMLElement {
     if (this.testingFileChooser != null) {
       const uploadedFile = this.testingFileChooser.getFile();
       if (uploadedFile != null) {
-        const execUrl = this.baseUrl.toString() + "api/v1/mappingExecution/" + selectedMappingId;
+        const execUrl =
+          this.baseUrl.toString() + "api/v1/mappingExecution/" + selectedMappingId;
         const file = uploadedFile.file;
-
+  
         let formData = new FormData();
         if (file != undefined) {
           formData.append("document", file);
         }
         return fetch(execUrl, {
           method: "POST",
-          body: formData
-        }).then(response => response.json())
-          .then(responseJson => {
-            if (download) {
-              this.triggerDownload(responseJson);
+          body: formData,
+        })
+          .then((response) => {
+            if (response.ok) {
+              return response.blob();
+            } else {
+              throw new Error("Server responded with an error.");
             }
           })
+          .then((responseBlob) => {
+            if (download) {
+              this.triggerDownload(responseBlob);
+            }
+            document.body.style.cursor = "auto";
+          })
+          .catch((error) => {
+            console.error(error);
+          });
       }
     }
   }
-
+  
   /**
    * In case if download is required triggerDownload can be used
    */
-  triggerDownload(response: Promise<any>) {
+  triggerDownload(response: Blob) {
     const element = document.createElement('a');
-    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(response)));
-    element.setAttribute('download', "result.json");
+    const fileURL = URL.createObjectURL(response);
+    element.setAttribute('href', fileURL);
+    element.setAttribute('download', "result.zip");
     element.style.display = 'none';
     this.shadowRoot.appendChild(element);
     element.click();
     this.shadowRoot.removeChild(element);
+    URL.revokeObjectURL(fileURL);
   }
 }
 
