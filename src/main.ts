@@ -164,10 +164,9 @@ class MappingInputProvider extends HTMLElement {
     if (this.testingFileChooser != null) {
       const uploadedFile = this.testingFileChooser.getFile();
       if (uploadedFile != null) {
-        const execUrl =
-          this.baseUrl.toString() + "api/v1/mappingExecution/" + selectedMappingId;
+        const execUrl =this.baseUrl.toString() + "api/v1/mappingExecution/" + selectedMappingId;
         const file = uploadedFile.file;
-  
+
         let formData = new FormData();
         if (file != undefined) {
           formData.append("document", file);
@@ -195,7 +194,7 @@ class MappingInputProvider extends HTMLElement {
       }
     }
   }
-  
+
   /**
    * In case if download is required triggerDownload can be used
    */
