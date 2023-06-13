@@ -191,7 +191,7 @@ class MappingInputProvider extends HTMLElement {
    */
   triggerDownload(response: Blob, contentDisposition: string, contentType: string) {
     const element = document.createElement('a');
-    const filename = contentDisposition.substr(contentDisposition.lastIndexOf("=") + 1);
+    const filename = contentDisposition.substr(contentDisposition.lastIndexOf("=") + 1) || 'result';
     const fileExtension = contentType.split('/')[1];
     const updatedFilename = `${filename}.${fileExtension}`;
     element.type = contentType;
