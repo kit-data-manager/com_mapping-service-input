@@ -173,6 +173,9 @@ class MappingInputProvider extends HTMLElement {
           method: "POST",
           body: formData,
         }).then(response => {
+          if (response.status !== 200) {
+            throw new Error("Request failed with status " + response.status);
+          }
           const contentDisposition = response.headers.get("content-disposition") || "";
           const contentType = response.headers.get("content-type") || "";
           return Promise.all([response.blob(), contentDisposition, contentType]);
@@ -181,7 +184,10 @@ class MappingInputProvider extends HTMLElement {
             if (download) {
               this.triggerDownload(responseBlob, contentDisposition, contentType);
             }
-          })
+          }).catch(error => {
+            console.error("Error occured due to response other than 200:", error);
+            alert("A remote mapping error occured. Please check server logs for details.");
+          });
       }
     }
   }
