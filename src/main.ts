@@ -165,20 +165,29 @@ class MappingInputProvider extends HTMLElement {
       if (uploadedFile != null) {
         const execUrl = this.baseUrl.toString() + "api/v1/mappingExecution/" + selectedMappingId;
         const file = uploadedFile.file;
-
         let formData = new FormData();
         if (file != undefined) {
           formData.append("document", file);
         }
         return fetch(execUrl, {
           method: "POST",
-          body: formData
-        }).then(response => response.json())
-          .then(responseJson => {
+          body: formData,
+        }).then(response => {
+          if (response.status !== 200) {
+            throw new Error("Request failed with status " + response.status);
+          }
+          const contentDisposition = response.headers.get("content-disposition") || "";
+          const contentType = response.headers.get("content-type") || "";
+          return Promise.all([response.blob(), contentDisposition, contentType]);
+        })
+          .then(([responseBlob, contentDisposition, contentType]) => {
             if (download) {
-              this.triggerDownload(responseJson);
+              this.triggerDownload(responseBlob, contentDisposition, contentType);
             }
-          })
+          }).catch(error => {
+            console.error("Error occured due to response other than 200:", error);
+            alert("A remote mapping error occured. Please check server logs for details.");
+          });
       }
     }
   }
@@ -186,14 +195,17 @@ class MappingInputProvider extends HTMLElement {
   /**
    * In case if download is required triggerDownload can be used
    */
-  triggerDownload(response: Promise<any>) {
+  triggerDownload(response: Blob, contentDisposition: string, contentType: string) {
     const element = document.createElement('a');
-    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(response)));
-    element.setAttribute('download', "result.json");
+    const filename = contentDisposition.substr(contentDisposition.lastIndexOf("=") + 1) || 'result';
+    element.type = contentType;
+    element.href = URL.createObjectURL(response);
+    element.download = filename;
     element.style.display = 'none';
     this.shadowRoot.appendChild(element);
     element.click();
     this.shadowRoot.removeChild(element);
+    URL.revokeObjectURL(element.href);
   }
 }
 
