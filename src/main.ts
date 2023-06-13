@@ -155,7 +155,6 @@ class MappingInputProvider extends HTMLElement {
   */
   executeMapping(): Promise<any>;
   async executeMapping(download: boolean = false): Promise<any> {
-    document.body.style.cursor = "progress";
     let inputElement: HTMLInputElement = <HTMLInputElement>(
       this.shadowRoot.getElementById("mappingchooser")
     );
@@ -164,9 +163,8 @@ class MappingInputProvider extends HTMLElement {
     if (this.testingFileChooser != null) {
       const uploadedFile = this.testingFileChooser.getFile();
       if (uploadedFile != null) {
-        const execUrl =this.baseUrl.toString() + "api/v1/mappingExecution/" + selectedMappingId;
+        const execUrl = this.baseUrl.toString() + "api/v1/mappingExecution/" + selectedMappingId;
         const file = uploadedFile.file;
-
         let formData = new FormData();
         if (file != undefined) {
           formData.append("document", file);
@@ -174,23 +172,16 @@ class MappingInputProvider extends HTMLElement {
         return fetch(execUrl, {
           method: "POST",
           body: formData,
+        }).then(response => {
+          const contentDisposition = response.headers.get("content-disposition") || "";
+          const contentType = response.headers.get("content-type") || "";
+          return Promise.all([response.blob(), contentDisposition, contentType]);
         })
-          .then((response) => {
-            if (response.ok) {
-              return response.blob();
-            } else {
-              throw new Error("Server responded with an error.");
-            }
-          })
-          .then((responseBlob) => {
+          .then(([responseBlob, contentDisposition, contentType]) => {
             if (download) {
-              this.triggerDownload(responseBlob);
+              this.triggerDownload(responseBlob, contentDisposition, contentType);
             }
-            document.body.style.cursor = "auto";
           })
-          .catch((error) => {
-            console.error(error);
-          });
       }
     }
   }
@@ -198,16 +189,19 @@ class MappingInputProvider extends HTMLElement {
   /**
    * In case if download is required triggerDownload can be used
    */
-  triggerDownload(response: Blob) {
+  triggerDownload(response: Blob, contentDisposition: string, contentType: string) {
     const element = document.createElement('a');
-    const fileURL = URL.createObjectURL(response);
-    element.setAttribute('href', fileURL);
-    element.setAttribute('download', "result.zip");
+    const filename = contentDisposition.substr(contentDisposition.lastIndexOf("=") + 1);
+    const fileExtension = contentType.split('/')[1];
+    const updatedFilename = `${filename}.${fileExtension}`;
+    element.type = contentType;
+    element.href = URL.createObjectURL(response);
+    element.download = updatedFilename;
     element.style.display = 'none';
     this.shadowRoot.appendChild(element);
     element.click();
     this.shadowRoot.removeChild(element);
-    URL.revokeObjectURL(fileURL);
+    URL.revokeObjectURL(element.href);
   }
 }
 
