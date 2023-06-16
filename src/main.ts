@@ -155,6 +155,7 @@ class MappingInputProvider extends HTMLElement {
   */
   executeMapping(): Promise<any>;
   async executeMapping(download: boolean = false): Promise<any> {
+    document.body.style.cursor = 'wait';
     let inputElement: HTMLInputElement = <HTMLInputElement>(
       this.shadowRoot.getElementById("mappingchooser")
     );
@@ -187,7 +188,9 @@ class MappingInputProvider extends HTMLElement {
           }).catch(error => {
             console.error("Error occured due to response other than 200:", error);
             alert("A remote mapping error occured. Please check server logs for details.");
-          });
+          }).finally(() => {
+            document.body.style.cursor = 'auto';
+          })
       }
     }
   }
