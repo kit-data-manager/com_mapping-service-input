@@ -155,6 +155,7 @@ class MappingInputProvider extends HTMLElement {
   */
   executeMapping(): Promise<any>;
   async executeMapping(download: boolean = false): Promise<any> {
+    // document.body.style.cursor = 'wait';
     let inputElement: HTMLInputElement = <HTMLInputElement>(
       this.shadowRoot.getElementById("mappingchooser")
     );
@@ -169,6 +170,7 @@ class MappingInputProvider extends HTMLElement {
         if (file != undefined) {
           formData.append("document", file);
         }
+        this.showOverlay();
         return fetch(execUrl, {
           method: "POST",
           body: formData,
@@ -187,7 +189,11 @@ class MappingInputProvider extends HTMLElement {
           }).catch(error => {
             console.error("Error occured due to response other than 200:", error);
             alert("A remote mapping error occured. Please check server logs for details.");
-          });
+          }).finally(() => {
+            this.hideOverlay();
+            // document.body.style.cursor = 'auto';
+          })
+
       }
     }
   }
@@ -206,6 +212,15 @@ class MappingInputProvider extends HTMLElement {
     element.click();
     this.shadowRoot.removeChild(element);
     URL.revokeObjectURL(element.href);
+  }
+
+  showOverlay(): void {
+    const overlayElement = document.getElementById('loading-overlay');
+    if (overlayElement) overlayElement.style.display = 'block';
+  }
+  hideOverlay(): void {
+    const overlayElement = document.getElementById('loading-overlay');
+    if (overlayElement) overlayElement.style.display = '';
   }
 }
 
