@@ -12,7 +12,7 @@ If the dependency is up set properly (instructions will follow), the component c
 ```html
 <head>
      ...
-    <!-- use the code !-->
+    <!-- add the below code !-->
      <script src="https://cdn.jsdelivr.net/npm/@kit-data-manager/mapping-service-input@latest/dist/com_mapping-service-input.es.js"></script>
 </head>
 <body>
