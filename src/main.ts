@@ -2,11 +2,17 @@ import templateContent from "./template.html?raw";
 import * as FilePondLib from "filepond";
 import { FilePond, FilePondOptions } from "filepond";
 import filepondCSS from "filepond/dist/filepond.min.css?inline";
-import typeahead from "typeahead-standalone";
+// import typeahead from "typeahead-standalone";
 import typeaheadCSS from "typeahead-standalone/dist/basic.css?inline";
 import customCSS from './style.css?inline';
 
 const ATTRIBUTES: string[] = ["base-url"];
+interface MappingItem {
+  id: string;
+  // logo: string;
+  title: string;
+  description?: string;
+}
 class MappingInputProvider extends HTMLElement {
   shadowRoot: ShadowRoot;
   private testingFileChooser: FilePond | null = null;
@@ -86,36 +92,182 @@ class MappingInputProvider extends HTMLElement {
       options.maxFiles = 1;
       this.testingFileChooser = FilePondLib.create(filepondElement, options);
     }
-    let inputElement: HTMLInputElement = <HTMLInputElement>(
-      this.shadowRoot.getElementById("mappingchooser")
+    const mappingIdsEndpoint = this.baseUrl.toString() + "api/v1/mappingAdministration/";
+    // const mappingIds =
+    //   [
+    //     {
+    //       id:'a',
+    //       //logo: 'logo',//based on mapping type: mappingType
+    //       title: 'SEM',//based on mapping type: mappingType
+
+    //     },
+    //     {
+    //       id: 'smthing1',//based on mapping type: mappingID
+    //       //logo: 'logo1',//based on mapping type: mappingType
+    //       title: 'TEM',//based on mapping type: mappingType
+
+    //     }
+    //   ]
+    // fetch(mappingIdsEndpoint).then(response =>
+    //   {
+    //     if(!response.ok){throw new Error("Failed to Fetch Mappings")}
+    //     return response.json();
+    //   }).then(
+    //     mappingIdsData =>
+    //     {const mappingIds =mappingIdsData.map(mapping =>({
+    //         id:mapping.id,
+    //         title:mapping.title
+    //     }));
+
+    //     }).catch(error => {
+    //       console.error("Error fetching mappingIds:", error);
+    //     });
+
+    // const optionsContainer = this.shadowRoot.getElementById("options-container");
+
+
+    // mappingIds.forEach(mapping => {
+    //   const button = document.createElement("button");
+    //   button.classList.add("xyz"); // Add the necessary class to the button
+    //   // Set the button attributes and content based on the mapping data
+    //   button.setAttribute("data-test", "start-basics");
+    //   button.innerHTML = `
+    //     <img class="zOays" src="https://www.adamdorman.com/_images/sem_logo.jpg" alt="${mapping.title} Logo">
+    //     <h2 class="_2cltK">${mapping.title} Metadata Extraction</h2>
+    //     <div>Select ${mapping.title}</div>
+    //   `;
+    //   // Add an event listener to the button if needed
+    //   button.addEventListener("click", () => {
+    //     // Handle button click event
+    //   });
+    
+    //   // Append the button to the options container
+    //   optionsContainer.appendChild(button);
+    // });
+    let optionsContainer : HTMLElement = <HTMLInputElement>(
+      this.shadowRoot.getElementById('options-container')
     );
-    if (inputElement != null) {
-      typeahead({
-        input: inputElement,
-        minLength: -1,
-        highlight: true,
-        source: {
-          prefetch: {
-            url: this.baseUrl.toString() + "api/v1/mappingAdministration/",
-            done: false,
-          },
-          identifier: "name",
-          transform: (data) => {
-            for (let item of data) {
-              if (typeof item == "object") {
-                item.name = item.title ? `${item.mappingId} - ${item.title}` : item.mappingId;
-              }
-            }
-            return data
-          },
-          dataTokens: ["description"],
-          identity: (suggestion) => `${suggestion.mappingId}${suggestion.title}`
-        },
-        preventSubmit: true,
-      });
-    } else {
-      console.error("Could not find element for mapping selector (typeahead).");
-    }
+    fetch(mappingIdsEndpoint).then(response => response.json())
+      .then((mappingIdsData: MappingItem[]) => {
+        const mappingIds=mappingIdsData.map((item:MappingItem)=>({
+          id:item.id,
+          title:item.title,
+          description:item.description
+        }));
+        optionsContainer.innerHTML = ''; 
+        mappingIds.forEach(mapping =>{
+          const button = document.createElement("button");
+          button.classList.add("xyz")
+          button.setAttribute("data-test", "start-basics");
+          button.innerHTML = `
+          
+          <span class="home-price section-Heading">${mapping.title}</span>
+          </div>
+          <span class="home-text10">
+            <br>
+            <span style="display:inline-block; overflow: auto; height: 124px;">
+              ${mapping.description}
+            </span>
+            <br>
+            <br>
+            <span></span>
+            </span>`;
+          // <div>Select ${mapping.title}</div>`;
+          optionsContainer.appendChild(button);
+        })
+    
+
+
+                    // fetch(mappingIdsEndpoint).then(response => response.json())
+                    //   .then((mappingIdsData: MappingItem[]) => {
+                    //     const mappingIds=mappingIdsData.map((item:MappingItem)=>({
+                    //       id:item.id,
+                    //       title:item.title
+                    //     }));
+                    //     mappingIds.forEach(mapping=>
+                    //       {
+                    //         const optionElement =document.createElement('div');
+                    //         optionElement.className = 'mapping-option';
+                          
+                    //         const idTitleContainer= document.createElement("div")
+                    //         idTitleContainer.className="id-title-container";
+
+                    //         const idElement = document.createElement("span");
+                    //         idElement.className="mapping-id";
+                    //         idElement.textContent=mapping.id;
+                    //         idTitleContainer.appendChild(idElement);
+                    //         idElement.addEventListener("click",() => 
+                    //         {
+                    //           const selectedMappingId = mapping.id;
+                    //           console.log("Selected Mapping ID:", selectedMappingId);
+
+                    //         })
+
+                    //         const titleElement = document.createElement("span");
+                    //         titleElement.className="mapping-title";
+                    //         titleElement.textContent=mapping.title;
+
+                    //         idTitleContainer.appendChild(titleElement);
+                    //         optionElement.appendChild(idTitleContainer);
+                    //         optionsContainer.appendChild(optionElement);
+                    //       });
+
+            // const idElement = document.createElement('span');
+            // idElement.className = 'mapping-id';
+            // idElement.textContent=mapping.id;
+            // optionElement.appendChild(idElement);
+
+            // const titleElement = document.createElement('span');
+            // idElement.className = 'mapping-title';
+            // idElement.textContent=mapping.title;
+            // optionElement.appendChild(titleElement);
+            // optionsContainer?.appendChild(optionElement);
+
+            // optionElement.addEventListener('click()', () =>
+            // {const selectedMappingId = idElement.textContent;
+
+            //   console.log("Selected Mapping ID:", selectedMappingId);
+
+            // })
+         
+
+      }).catch(error => 
+        {
+          console.error('Error while fetch Mapping Ids' +error)
+        })
+
+
+
+    // let inputElement: HTMLInputElement = <HTMLInputElement>(
+    //   this.shadowRoot.getElementById("mappingchooser")
+    // );
+    // if (inputElement != null) {
+    //   typeahead({
+    //     input: inputElement,
+    //     minLength: -1,
+    //     highlight: true,
+    //     source: {
+    //       prefetch: {
+    //         url: this.baseUrl.toString() + "api/v1/mappingAdministration/",
+    //         done: false,
+    //       },
+    //       identifier: "name",
+    //       transform: (data) => {
+    //         for (let item of data) {
+    //           if (typeof item == "object") {
+    //             item.name = item.title ? `${item.mappingId} - ${item.title}` : item.mappingId;
+    //           }
+    //         }
+    //         return data
+    //       },
+    //       dataTokens: ["description"],
+    //       identity: (suggestion) => `${suggestion.mappingId}${suggestion.title}`
+    //     },
+    //     preventSubmit: true,
+    //   });
+    // } else {
+    //   console.error("Could not find element for mapping selector (typeahead).");
+    // }
   }
 
   /**
@@ -157,9 +309,10 @@ class MappingInputProvider extends HTMLElement {
   async executeMapping(download: boolean = false): Promise<any> {
     document.body.style.cursor = 'wait';
     let inputElement: HTMLInputElement = <HTMLInputElement>(
-      this.shadowRoot.getElementById("mappingchooser")
+      this.shadowRoot.getElementById("options-container")
     );
     const selectedValue = inputElement?.value;
+    console.log('Selected Value ' +selectedValue)
     const selectedMappingId = selectedValue?.split("-")[0].trim();
     if (this.testingFileChooser != null) {
       const uploadedFile = this.testingFileChooser.getFile();
