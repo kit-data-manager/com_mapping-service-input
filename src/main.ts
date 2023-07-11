@@ -8,11 +8,11 @@ import customCSS from './style.css?inline';
 
 const ATTRIBUTES: string[] = ["base-url"];
 interface MappingItem {
-  id: string;
+  mappingId: string;
   title: string;
   description?: string;
-  mappingType:string;
-  name:string;
+  mappingType: string;
+  name: string;
 }
 class MappingInputProvider extends HTMLElement {
   shadowRoot: ShadowRoot;
@@ -21,7 +21,10 @@ class MappingInputProvider extends HTMLElement {
   baseUrl: URL = new URL("http://localhost:8090/");
   // ---
 
+  selectedMappingId: string | null = null;
+  selectedMappingType: string | null = null;
 
+  messageDisplayed: boolean | null = null;
   // --- Helper methods
   addCssContent(css: string): void {
     let styleElem: HTMLStyleElement = document.createElement("style");
@@ -93,77 +96,106 @@ class MappingInputProvider extends HTMLElement {
       options.maxFiles = 1;
       this.testingFileChooser = FilePondLib.create(filepondElement, options);
     }
-    //plugin endpoint test 
-    let pluginContainer : HTMLElement = <HTMLInputElement>(
-      this.shadowRoot.getElementById('plugin-container')
-    );
-    const pluginEndpoints = this.baseUrl.toString() + "api/v1/mappingAdministration/types"
-    fetch(pluginEndpoints).then(response =>response.json()
-    )
-    .then((pluginData: MappingItem[]) =>{
-      console.log(pluginData);
-      const pluginType = pluginData.map((item:MappingItem)=>({
-        id:item.id,
-        name:item.name
-      }));
-      pluginContainer.innerHTML='';
-      console.log(pluginData);
-      pluginType.forEach(plugin=>
-        {
-          const division = document.createElement("div")
-          division.classList.add("xyz");
 
-          division.innerHTML=`
-          <span >Type : ${plugin.id}</span>
-          <span class="home-price section-Heading">Title: ${plugin.name}</span>
-          `
-          pluginContainer.appendChild(division);
-        })
-
-    }).catch(error => {
-      console.log(`Error fetching data from server`, error);
-    })
     //Box of detailed contents like title , description
     const mappingIdsEndpoint = this.baseUrl.toString() + "api/v1/mappingAdministration/";
-    let optionsContainer : HTMLElement = <HTMLInputElement>(
+    let optionsContainer: HTMLElement = <HTMLInputElement>(
       this.shadowRoot.getElementById('options-container')
     );
+    optionsContainer.addEventListener("click", (event) => {
+      const selectedButton = event.target as HTMLElement;
+      console.log(selectedButton);
+      // Remove the "selected" class from all buttons
+      const buttons = optionsContainer.querySelectorAll(".selection-button");
+      // console.log(buttons);
+      buttons.forEach((button) => {
+        button.classList.remove("selected-id");
+
+      });
+      // Add the "selected" class to the clicked button
+      selectedButton.classList.add("selected-id");
+
+      // Get the selected mapping ID from the button's ID
+      const selectedMappingId = selectedButton.id.replace("mapping-button-", "");
+      this.selectedMappingId = selectedMappingId;
+
+      // const selectedType=selectedButton
+      console.log(selectedButton);
+    });
+
     fetch(mappingIdsEndpoint).then(response => response.json())
       .then((mappingIdsData: MappingItem[]) => {
-        const mappingIds = mappingIdsData.map((item:MappingItem)=>({
-          id:item.id,
-          title:item.title,
-          description:item.description,
+        const mappingIds = mappingIdsData.map((item: MappingItem) => ({
+
+          id: item.mappingId,
+          title: item.title,
+          description: item.description,
           type: item.mappingType
         }));
-        optionsContainer.innerHTML = ''; 
-        mappingIds.forEach(mapping =>{
+        optionsContainer.innerHTML = '';
+        mappingIds.forEach(mapping => {
           const division = document.createElement("div")
-          const button = document.createElement("button");
-          button.classList.add("xyz");
+          // const button = document.createElement("button");
+          // button.classList.add("xyz");
           division.classList.add("xyz");
-          button.setAttribute("data-test", "start-basics");
+          // button.setAttribute("data-test", "start-basics");
+          // button.id = `${mapping.id}`;
+          // button.innerText = "Select";
+
+          //<span class="selected-type section-type">Type : ${mapping.type}</span>
+          // <span class="home-price section-heading"> ${mapping.title}</span>
           division.innerHTML = `
-          <span >Type : ${mapping.type}</span>
-          <span class="home-price section-Heading">Title: ${mapping.title}</span>
-          </div>
-          <span class="home-text10">
+          <img class="mapping-image" src="${this.getImageByType(mapping.type)}" alt="Mapping Image" />
+          
+          
+          <span class="home-text10 section-description">
             <br>
             <span style="display:inline-block; overflow: auto; height: 124px;">
-              Description: ${mapping.description}
+               ${mapping.description}
             </span>
-            <br>
-            <br>
             <span></span>
             </span>
-            <button>select</button>
+            <button class ="selection-button " id="mapping-button-${mapping.id}" >Select</button>
+            
+
             `;
+
+          const button = division.querySelector(`#mapping-button-${mapping.id}`);
+
+          if (button) {
+            button.addEventListener("click", () => {
+              this.selectedMappingId = mapping.id;
+
+              console.log(this.selectedMappingId);
+              if (!this.messageDisplayed) {
+                const fileInput = this.shadowRoot.querySelector("#fileUpload");
+
+                const messageElement = document.createElement("div");
+                // messageElement.style.display = "none";
+                messageElement.innerText = "Please upload file and then click on map document to extract metadata";
+                messageElement.style.marginBottom = "10px"; // Add some bottom margin for spacing
+                messageElement.classList.add("message");
+                if (fileInput != null && fileInput.parentNode != null) {
+                  fileInput.parentNode.insertBefore(messageElement, fileInput);
+                }
+                this.messageDisplayed = true;
+
+              }
+
+              // this.displayMessage("Please upload file and then click on map document to extract metadata");
+              // this.executeMapping(selectedMappingId);
+              const selectedMappingType = mapping.type;
+              console.log(selectedMappingType);
+
+
+            });
+          }
           optionsContainer.appendChild(division);
+
         })
-      }).catch(error => 
-        {
-          console.error('Error while fetch Mapping Ids' +error)
-        })
+      }).catch(error => {
+        console.error('Error while fetch Mapping Ids' + error)
+      })
 
   }
 
@@ -205,13 +237,11 @@ class MappingInputProvider extends HTMLElement {
   executeMapping(): Promise<any>;
   async executeMapping(download: boolean = false): Promise<any> {
     document.body.style.cursor = 'wait';
-    let inputElement: HTMLInputElement = <HTMLInputElement>(
-      this.shadowRoot.getElementById("options-container")
-    );
-    const selectedValue = inputElement?.value;
-    console.log('Selected Value ' +selectedValue)
-    const selectedMappingId = selectedValue?.split("-")[0].trim();
-    if (this.testingFileChooser != null) {
+    const selectedMappingId = this.selectedMappingId;
+    // const selectedValue = inputElement?.value;
+    // console.log('Selected Value ' +selectedValue)
+    // const selectedMappingId = selectedValue?.split("-")[0].trim();
+    if (selectedMappingId && this.testingFileChooser != null) {
       const uploadedFile = this.testingFileChooser.getFile();
       if (uploadedFile != null) {
         const execUrl = this.baseUrl.toString() + "api/v1/mappingExecution/" + selectedMappingId;
@@ -259,6 +289,18 @@ class MappingInputProvider extends HTMLElement {
     element.click();
     this.shadowRoot.removeChild(element);
     URL.revokeObjectURL(element.href);
+  }
+
+  getImageByType(mappingType: string): string {
+    if (mappingType.includes("GEMMA")) {
+      return "https://th.bing.com/th/id/R.13af2c708c50701c5c418f39f1032c4a?rik=Bhi%2fy8GZ%2fC%2b1%2bg&riu=http%3a%2f%2flogos.textgiraffe.com%2flogos%2flogo-name%2fGemma-designstyle-pastel-m.png&ehk=oiRKyC5Jg2VKEybuGyH%2f8q4l73rWTBZpvXw7hP69AOk%3d&risl=&pid=ImgRaw&r=0";
+    } else if (mappingType.includes("SEM")) {
+      return "https://th.bing.com/th/id/R.aaebd43a8dc60519d02c93699d67fa33?rik=c9P%2bsFde%2bGc8gg&riu=http%3a%2f%2fwww.benspaintsupply.com%2fwp-content%2fuploads%2f2011%2f10%2fSEM-Logo.jpg&ehk=n3cCc0XCRDKt0XFslLWIafoPO6zFEMc91UZQJA6hxuA%3d&risl=&pid=ImgRaw&r=0";
+    } else if (mappingType.includes("TEM")) {
+      return "https://en.tem.ch/wp-content/uploads/sites/2/2019/08/TEM_Logo_Ohne_Claim.jpg";
+    } else {
+      return "https://th.bing.com/th/id/OIP.dDFaFWAAhofP-4yOMUOsCwHaD5?pid=ImgDet&rs=1";
+    }
   }
 }
 
