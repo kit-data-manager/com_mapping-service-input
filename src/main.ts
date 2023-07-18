@@ -2,8 +2,6 @@ import templateContent from "./template.html?raw";
 import * as FilePondLib from "filepond";
 import { FilePond, FilePondOptions } from "filepond";
 import filepondCSS from "filepond/dist/filepond.min.css?inline";
-// import typeahead from "typeahead-standalone";
-import typeaheadCSS from "typeahead-standalone/dist/basic.css?inline";
 import customCSS from './style.css?inline';
 
 const ATTRIBUTES: string[] = ["base-url"];
@@ -23,7 +21,6 @@ class MappingInputProvider extends HTMLElement {
 
   selectedMappingId: string | null = null;
   selectedMappingType: string | null = null;
-
   messageDisplayed: boolean | null = null;
   // --- Helper methods
   addCssContent(css: string): void {
@@ -48,7 +45,6 @@ class MappingInputProvider extends HTMLElement {
     // Create Shadow DOM
     this.shadowRoot = this.attachShadow({ mode: "open" });
     this.addCssContent(filepondCSS);
-    this.addCssContent(typeaheadCSS);
     this.addCssContent(customCSS);
 
     // Apply HTML Template to shadow DOM
@@ -97,36 +93,20 @@ class MappingInputProvider extends HTMLElement {
       this.testingFileChooser = FilePondLib.create(filepondElement, options);
     }
 
-    //Box of detailed contents like title , description
+    //Box of detailed contents like image, description of mapping
     const mappingIdsEndpoint = this.baseUrl.toString() + "api/v1/mappingAdministration/";
     let optionsContainer: HTMLElement = <HTMLInputElement>(
       this.shadowRoot.getElementById('options-container')
     );
-    optionsContainer.addEventListener("click", (event) => {
-      const selectedButton = event.target as HTMLElement;
-      console.log(selectedButton);
-      // Remove the "selected" class from all buttons
-      const buttons = optionsContainer.querySelectorAll(".selection-button");
-      // console.log(buttons);
-      buttons.forEach((button) => {
-        button.classList.remove("selected-id");
+    // Remove any existing event listeners before adding a new one
+    optionsContainer.removeEventListener("click", this.handleButtonClick.bind(this));
 
-      });
-      // Add the "selected" class to the clicked button
-      selectedButton.classList.add("selected-id");
-
-      // Get the selected mapping ID from the button's ID
-      const selectedMappingId = selectedButton.id.replace("mapping-button-", "");
-      this.selectedMappingId = selectedMappingId;
-
-      // const selectedType=selectedButton
-      console.log(selectedButton);
-    });
+    // Add the event listener
+    optionsContainer.addEventListener("click", this.handleButtonClick.bind(this));
 
     fetch(mappingIdsEndpoint).then(response => response.json())
       .then((mappingIdsData: MappingItem[]) => {
         const mappingIds = mappingIdsData.map((item: MappingItem) => ({
-
           id: item.mappingId,
           title: item.title,
           description: item.description,
@@ -135,43 +115,28 @@ class MappingInputProvider extends HTMLElement {
         optionsContainer.innerHTML = '';
         mappingIds.forEach(mapping => {
           const division = document.createElement("div")
-          // const button = document.createElement("button");
-          // button.classList.add("xyz");
-          division.classList.add("xyz");
-          // button.setAttribute("data-test", "start-basics");
-          // button.id = `${mapping.id}`;
-          // button.innerText = "Select";
-
-          //<span class="selected-type section-type">Type : ${mapping.type}</span>
-          // <span class="home-price section-heading"> ${mapping.title}</span>
+          division.classList.add("cards");
           division.innerHTML = `
+          <!-- Commenting out the image section -->
+          <!-- 
           <img class="mapping-image" src="${this.getImageByType(mapping.type)}" alt="Mapping Image" />
-          
-          
+          -->
+          <h3>${mapping.title}</h3>
           <span class="home-text10 section-description">
             <br>
             <span style="display:inline-block; overflow: auto; height: 124px;">
                ${mapping.description}
             </span>
-            <span></span>
             </span>
             <button class ="selection-button " id="mapping-button-${mapping.id}" >Select</button>
-            
-
             `;
-
           const button = division.querySelector(`#mapping-button-${mapping.id}`);
-
           if (button) {
             button.addEventListener("click", () => {
               this.selectedMappingId = mapping.id;
-
-              console.log(this.selectedMappingId);
               if (!this.messageDisplayed) {
                 const fileInput = this.shadowRoot.querySelector("#fileUpload");
-
                 const messageElement = document.createElement("div");
-                // messageElement.style.display = "none";
                 messageElement.innerText = "Please upload file and then click on map document to extract metadata";
                 messageElement.style.marginBottom = "10px"; // Add some bottom margin for spacing
                 messageElement.classList.add("message");
@@ -179,19 +144,10 @@ class MappingInputProvider extends HTMLElement {
                   fileInput.parentNode.insertBefore(messageElement, fileInput);
                 }
                 this.messageDisplayed = true;
-
               }
-
-              // this.displayMessage("Please upload file and then click on map document to extract metadata");
-              // this.executeMapping(selectedMappingId);
-              const selectedMappingType = mapping.type;
-              console.log(selectedMappingType);
-
-
             });
           }
           optionsContainer.appendChild(division);
-
         })
       }).catch(error => {
         console.error('Error while fetch Mapping Ids' + error)
@@ -203,7 +159,6 @@ class MappingInputProvider extends HTMLElement {
    * Invoked each time the custom element is disconnected from the document's DOM.
    */
   disconnectedCallback(): void {
-    return;
   }
 
   /**
@@ -238,9 +193,6 @@ class MappingInputProvider extends HTMLElement {
   async executeMapping(download: boolean = false): Promise<any> {
     document.body.style.cursor = 'wait';
     const selectedMappingId = this.selectedMappingId;
-    // const selectedValue = inputElement?.value;
-    // console.log('Selected Value ' +selectedValue)
-    // const selectedMappingId = selectedValue?.split("-")[0].trim();
     if (selectedMappingId && this.testingFileChooser != null) {
       const uploadedFile = this.testingFileChooser.getFile();
       if (uploadedFile != null) {
@@ -291,16 +243,42 @@ class MappingInputProvider extends HTMLElement {
     URL.revokeObjectURL(element.href);
   }
 
+  /**
+   * In case if you want to show images according the the mappingType eg: SEM,TEM etc yu can use this method
+   */
   getImageByType(mappingType: string): string {
     if (mappingType.includes("GEMMA")) {
-      return "https://th.bing.com/th/id/R.13af2c708c50701c5c418f39f1032c4a?rik=Bhi%2fy8GZ%2fC%2b1%2bg&riu=http%3a%2f%2flogos.textgiraffe.com%2flogos%2flogo-name%2fGemma-designstyle-pastel-m.png&ehk=oiRKyC5Jg2VKEybuGyH%2f8q4l73rWTBZpvXw7hP69AOk%3d&risl=&pid=ImgRaw&r=0";
+      // Assuming gemma.png is in the assets/images folder
+      return "/images/gemma.png";
     } else if (mappingType.includes("SEM")) {
-      return "https://th.bing.com/th/id/R.aaebd43a8dc60519d02c93699d67fa33?rik=c9P%2bsFde%2bGc8gg&riu=http%3a%2f%2fwww.benspaintsupply.com%2fwp-content%2fuploads%2f2011%2f10%2fSEM-Logo.jpg&ehk=n3cCc0XCRDKt0XFslLWIafoPO6zFEMc91UZQJA6hxuA%3d&risl=&pid=ImgRaw&r=0";
+      // Assuming sem.png is in the assets/images folder
+      return "/images/tem.png";
     } else if (mappingType.includes("TEM")) {
-      return "https://en.tem.ch/wp-content/uploads/sites/2/2019/08/TEM_Logo_Ohne_Claim.jpg";
+      // Assuming tem.png is in the assets/images folder
+      return "/images/tem.png";
     } else {
-      return "https://th.bing.com/th/id/OIP.dDFaFWAAhofP-4yOMUOsCwHaD5?pid=ImgDet&rs=1";
+      // Default image path when no mapping type matches
+      return "/images/other.png";
     }
+  }
+
+  /**
+  * We have used this method to capture mapping id which is later used to execute mapping
+  */
+  private handleButtonClick(event: Event) {
+    const selectedButton = event.target as HTMLElement;
+    console.log(selectedButton);
+    // Remove the "selected" class from all buttons
+    const buttons = this.shadowRoot.querySelectorAll(".selection-button");
+    buttons.forEach((button) => {
+      button.classList.remove("selected-id");
+    });
+    // Add the "selected" class to the clicked button
+    selectedButton.classList.add("selected-id");
+
+    // Get the selected mapping ID from the button's ID
+    const selectedMappingId = selectedButton.id.replace("mapping-button-", "");
+    this.selectedMappingId = selectedMappingId;
   }
 }
 
