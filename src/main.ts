@@ -2,11 +2,16 @@ import templateContent from "./template.html?raw";
 import * as FilePondLib from "filepond";
 import { FilePond, FilePondOptions } from "filepond";
 import filepondCSS from "filepond/dist/filepond.min.css?inline";
-import typeahead from "typeahead-standalone";
-import typeaheadCSS from "typeahead-standalone/dist/basic.css?inline";
 import customCSS from './style.css?inline';
 
 const ATTRIBUTES: string[] = ["base-url"];
+interface MappingItem {
+  mappingId: string;
+  title: string;
+  description?: string;
+  mappingType: string;
+  name: string;
+}
 class MappingInputProvider extends HTMLElement {
   shadowRoot: ShadowRoot;
   private testingFileChooser: FilePond | null = null;
@@ -14,7 +19,9 @@ class MappingInputProvider extends HTMLElement {
   baseUrl: URL = new URL("http://localhost:8090/");
   // ---
 
-
+  selectedMappingId: string | null = null;
+  selectedMappingType: string | null = null;
+  messageDisplayed: boolean | null = null;
   // --- Helper methods
   addCssContent(css: string): void {
     let styleElem: HTMLStyleElement = document.createElement("style");
@@ -38,7 +45,6 @@ class MappingInputProvider extends HTMLElement {
     // Create Shadow DOM
     this.shadowRoot = this.attachShadow({ mode: "open" });
     this.addCssContent(filepondCSS);
-    this.addCssContent(typeaheadCSS);
     this.addCssContent(customCSS);
 
     // Apply HTML Template to shadow DOM
@@ -86,43 +92,73 @@ class MappingInputProvider extends HTMLElement {
       options.maxFiles = 1;
       this.testingFileChooser = FilePondLib.create(filepondElement, options);
     }
-    let inputElement: HTMLInputElement = <HTMLInputElement>(
-      this.shadowRoot.getElementById("mappingchooser")
+
+    //Box of detailed contents like image, description of mapping
+    const mappingIdsEndpoint = this.baseUrl.toString() + "api/v1/mappingAdministration/";
+    let optionsContainer: HTMLElement = <HTMLInputElement>(
+      this.shadowRoot.getElementById('options-container')
     );
-    if (inputElement != null) {
-      typeahead({
-        input: inputElement,
-        minLength: -1,
-        highlight: true,
-        source: {
-          prefetch: {
-            url: this.baseUrl.toString() + "api/v1/mappingAdministration/",
-            done: false,
-          },
-          identifier: "name",
-          transform: (data) => {
-            for (let item of data) {
-              if (typeof item == "object") {
-                item.name = item.title ? `${item.mappingId} - ${item.title}` : item.mappingId;
+    // Remove any existing event listeners before adding a new one
+    optionsContainer.removeEventListener("click", this.handleButtonClick.bind(this));
+
+    // Add the event listener
+    optionsContainer.addEventListener("click", this.handleButtonClick.bind(this));
+
+    fetch(mappingIdsEndpoint).then(response => response.json())
+      .then((mappingIdsData: MappingItem[]) => {
+        const mappingIds = mappingIdsData.map((item: MappingItem) => ({
+          id: item.mappingId,
+          title: item.title,
+          description: item.description,
+          type: item.mappingType
+        }));
+        optionsContainer.innerHTML = '';
+        mappingIds.forEach(mapping => {
+          const division = document.createElement("div")
+          division.classList.add("cards");
+          division.innerHTML = `
+          <!-- Commenting out the image section -->
+          <!-- 
+          <img class="mapping-image" src="${this.getImageByType(mapping.type)}" alt="Mapping Image" />
+          -->
+          <h3>${mapping.title}</h3>
+          <span class="home-text10 section-description">
+            <br>
+            <span style="display:inline-block; overflow: auto; height: 124px;">
+               ${mapping.description}
+            </span>
+            </span>
+            <button class ="selection-button " id="mapping-button-${mapping.id}" >Select</button>
+            `;
+          const button = division.querySelector(`#mapping-button-${mapping.id}`);
+          if (button) {
+            button.addEventListener("click", () => {
+              this.selectedMappingId = mapping.id;
+              if (!this.messageDisplayed) {
+                const fileInput = this.shadowRoot.querySelector("#fileUpload");
+                const messageElement = document.createElement("div");
+                messageElement.innerText = "Please upload file and then click on map document to extract metadata";
+                messageElement.style.marginBottom = "10px"; // Add some bottom margin for spacing
+                messageElement.classList.add("message");
+                if (fileInput != null && fileInput.parentNode != null) {
+                  fileInput.parentNode.insertBefore(messageElement, fileInput);
+                }
+                this.messageDisplayed = true;
               }
-            }
-            return data
-          },
-          dataTokens: ["description"],
-          identity: (suggestion) => `${suggestion.mappingId}${suggestion.title}`
-        },
-        preventSubmit: true,
-      });
-    } else {
-      console.error("Could not find element for mapping selector (typeahead).");
-    }
+            });
+          }
+          optionsContainer.appendChild(division);
+        })
+      }).catch(error => {
+        console.error('Error while fetch Mapping Ids' + error)
+      })
+
   }
 
   /**
    * Invoked each time the custom element is disconnected from the document's DOM.
    */
   disconnectedCallback(): void {
-    return;
   }
 
   /**
@@ -156,12 +192,8 @@ class MappingInputProvider extends HTMLElement {
   executeMapping(): Promise<any>;
   async executeMapping(download: boolean = false): Promise<any> {
     document.body.style.cursor = 'wait';
-    let inputElement: HTMLInputElement = <HTMLInputElement>(
-      this.shadowRoot.getElementById("mappingchooser")
-    );
-    const selectedValue = inputElement?.value;
-    const selectedMappingId = selectedValue?.split("-")[0].trim();
-    if (this.testingFileChooser != null) {
+    const selectedMappingId = this.selectedMappingId;
+    if (selectedMappingId && this.testingFileChooser != null) {
       const uploadedFile = this.testingFileChooser.getFile();
       if (uploadedFile != null) {
         const execUrl = this.baseUrl.toString() + "api/v1/mappingExecution/" + selectedMappingId;
@@ -209,6 +241,44 @@ class MappingInputProvider extends HTMLElement {
     element.click();
     this.shadowRoot.removeChild(element);
     URL.revokeObjectURL(element.href);
+  }
+
+  /**
+   * In case if you want to show images according the the mappingType eg: SEM,TEM etc yu can use this method
+   */
+  getImageByType(mappingType: string): string {
+    if (mappingType.includes("GEMMA")) {
+      // Assuming gemma.png is in the assets/images folder
+      return "/images/gemma.png";
+    } else if (mappingType.includes("SEM")) {
+      // Assuming sem.png is in the assets/images folder
+      return "/images/tem.png";
+    } else if (mappingType.includes("TEM")) {
+      // Assuming tem.png is in the assets/images folder
+      return "/images/tem.png";
+    } else {
+      // Default image path when no mapping type matches
+      return "/images/other.png";
+    }
+  }
+
+  /**
+  * We have used this method to capture mapping id which is later used to execute mapping
+  */
+  private handleButtonClick(event: Event) {
+    const selectedButton = event.target as HTMLElement;
+    console.log(selectedButton);
+    // Remove the "selected" class from all buttons
+    const buttons = this.shadowRoot.querySelectorAll(".selection-button");
+    buttons.forEach((button) => {
+      button.classList.remove("selected-id");
+    });
+    // Add the "selected" class to the clicked button
+    selectedButton.classList.add("selected-id");
+
+    // Get the selected mapping ID from the button's ID
+    const selectedMappingId = selectedButton.id.replace("mapping-button-", "");
+    this.selectedMappingId = selectedMappingId;
   }
 }
 

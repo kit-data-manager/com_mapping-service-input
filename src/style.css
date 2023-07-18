@@ -1,24 +1,16 @@
-input {
-  padding: 0.625rem;
-  font-size: 0.875rem;
-  border: 1px solid #ccc;
-  border-radius: 0.25rem;
-  width: 23.625rem;
-}
-
 #fileUpload {
   padding: 0.625rem;
   width: auto;
   margin: 2.5rem auto 4rem;
   border: none;
   background-color: #d9eaea;
-  box-shadow: 0 0.125rem 0.3125rem rgba(0, 0, 0, 0.3);
+  /* box-shadow: 0 0.125rem 0.3125rem rgba(0, 0, 0, 0.3); */
   transition: all 0.3s ease;
   font-size: 1.5625rem;
-  color: #f80abd;
-  width: calc(90% - 2.125rem);
-  margin-left: auto;
-  margin-right: auto;
+  /* color: #f80abd; */
+  /* width: calc(90% - 2.125rem); */
+  margin-left: 25px;
+  margin-right: 25px;
   height: 9.375rem;
   text-align-last: center;
 }
@@ -42,33 +34,106 @@ button:hover {
   transform: translateY(-0.125rem);
 }
 
-.mapping-container {
-  max-width: 37.5rem;
-  margin: 0 auto;
+.home-text08 {
+  font-size: 2rem;
+}
+
+.home-text09 {
+  font-size: 1.125rem;
+}
+
+.message {
+  background-color: #eaf0b0;
+  align-content: center;
+  text-align: center;
+  color: #333;
+  padding: 0.625rem 1.25rem;
+  margin-bottom: 0.625rem;
+  margin-left: 1.5625rem;
+  margin-right: 1.5625rem;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 0.3125rem;
+  animation: fade-in 0.3s ease-in-out;
+}
+
+.selection-button.selected-id {
+  /* Add your selected button styles here */
+  background-color: rgb(137, 202, 84);
+  color: #fff;
+}
+
+.mapping-options {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.25rem;
+}
+
+.container-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  overflow-x: auto;
+  align-self: center;
+  padding: 1.25rem;
+}
+
+.options-container {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  overflow-x: auto;
+  padding-bottom: 0.625rem;
+}
+
+.cards {
+  flex: 0 0 calc(25% - 1.25rem);
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0.625rem;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  margin: 0.625rem;
+  overflow: hidden;
+  position: relative;
+  min-width: 12.5rem;
+  /* Added minimum width for better mobile view */
+  background-color: #eef3f4;
+  /* Add your desired background color here */
+}     
+
+.cards img {
+  max-width: 6.25rem;
+  margin-bottom: 0.625rem;
+} 
+
+.cards h2 {
+  margin-bottom: 0.625rem;
+  white-space: normal;
+  overflow-wrap: break-word;
+  cursor: pointer;
+  width: 100%;
+  background-color: #c49898;
+  color: #333;
+  padding: 0.3125rem;
+  border-radius: 0.3125rem;
+}
+
+.cards div {
+  text-align: center;
+  white-space: normal;
+}
+
+.home-heading-container {
   text-align: center;
 }
 
-.mapping-title {
-  font-size: 2rem;
-  margin-bottom: 1.25rem;
-}
-
-.mapping-input-container {
-  display: flex;
-  align-items: center;
-  max-width: 25rem;
-  margin: 0 auto;
-  background-color: #fff;
-  border-radius: 3.125rem;
-  padding: 0.625rem 1.25rem;
-  box-shadow: 0 0.125rem 0.3125rem rgba(0, 0, 0, 0.3);
-  width: fit-content;
-}
-
-.mapping-input {
-  flex: 1;
-  border: none;
-  outline: none;
-  font-size: 1.125rem;
-  padding: 0.625rem;
+.section-heading {
+  /* background-color: #c52222; */
+  font-size: large;
 }
