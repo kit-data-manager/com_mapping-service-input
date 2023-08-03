@@ -96,7 +96,7 @@ class MappingInputProvider extends HTMLElement {
     //Box of detailed contents like image, description of mapping
     const mappingIdsEndpoint = this.baseUrl.toString() + "api/v1/mappingAdministration/";
     let optionsContainer: HTMLElement = <HTMLInputElement>(
-      this.shadowRoot.getElementById('options-container')
+      this.shadowRoot.getElementById('options-container options-center')
     );
     // Remove any existing event listeners before adding a new one
     optionsContainer.removeEventListener("click", this.handleButtonClick.bind(this));
@@ -148,6 +148,11 @@ class MappingInputProvider extends HTMLElement {
             });
           }
           optionsContainer.appendChild(division);
+          if (mappingIds.length < 5) {
+            optionsContainer.classList.add('options-center'); // Add the class if less than 5 cards
+          } else {
+            optionsContainer.classList.remove('options-center'); // Remove the class if more than 5 cards
+          }
         })
       }).catch(error => {
         console.error('Error while fetch Mapping Ids' + error)
