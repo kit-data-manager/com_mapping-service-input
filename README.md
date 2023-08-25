@@ -10,7 +10,7 @@ The Mapping component serves as a user-friendly interface to extract metadata fr
 
 If the dependency is up set properly (instructions will follow), the component can be used like this:
 
-Add the Element:
+**Add the Element**:
 To integrate the Mapping component into your project, insert the following HTML element into your webpage:
 
 ```html
@@ -24,7 +24,7 @@ To integrate the Mapping component into your project, insert the following HTML 
     <mapping-input base-url="http://localhost:8090/" id="input-component"></mapping-input>
 </body>
 ```
-Invoke the Download Functionality:
+**Invoke the Download Functionality**:
 
 For enabling the download functionality, include the following HTML code in your page:
 ```html
@@ -43,7 +43,6 @@ For enabling the download functionality, include the following HTML code in your
 The executeMapping(true) method call triggers both the mapping process and the subsequent download of the result.
 
 Adjusting Base URL:
-
 The base-url attribute in the <mapping-input> element allows you to specify the base URL for your Mapping Service instance. You can modify this URL as needed to suit your requirements.
 
 By following these steps, you can easily integrate the Mapping component into your project and utilize its capabilities for extracting metadata from instrument-generated data.
