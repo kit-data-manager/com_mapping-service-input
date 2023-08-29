@@ -148,10 +148,10 @@ class MappingInputProvider extends HTMLElement {
             });
           }
           optionsContainer.appendChild(division);
-          if (mappingIds.length < 5) {
-            optionsContainer.classList.add('options-center'); // Add the class if less than 5 cards
+          if (mappingIds.length < 4) {
+            optionsContainer.classList.add('options-center'); // Add the class if less than 4 cards
           } else {
-            optionsContainer.classList.remove('options-center'); // Remove the class if more than 5 cards
+            optionsContainer.classList.remove('options-center'); // Remove the class if more than 4 cards
           }
         })
       }).catch(error => {
