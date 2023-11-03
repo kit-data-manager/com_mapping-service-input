@@ -34,10 +34,6 @@ button:hover {
   transform: translateY(-0.125rem);
 }
 
-.home-text08 {
-  font-size: 2rem;
-}
-
 .home-text09 {
   font-size: 1.125rem;
 }
@@ -134,9 +130,6 @@ button:hover {
   white-space: normal;
 }
 
-.home-heading-container {
-  text-align: center;
-}
 
 .section-heading {
   /* background-color: #c52222; */
