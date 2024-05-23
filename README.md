@@ -79,18 +79,6 @@ DONOT forget to add the html code(mentioned above) to run this locally.
 - `executeMapping(true)`: To trigger the mapping process, you can include the following HTML code in your project:
  (true in the method argument will trigger mapping + download of the result)
 
-```html
- ...
-    <!-- use the method !-->
-
-`<div class="ui center aligned grid">
-  <button type="submit" class="ui primary button" id="submit" onclick="
-    var component = document.getElementById('input-component');
-    component.executeMapping(true)">Map document
-  </button>
-</div>`
-
-```
 
 
 
