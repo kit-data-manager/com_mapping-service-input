@@ -60,7 +60,7 @@ and run:(Before running below command make sure node.js is installed in your sys
 npm install
 ```
 
-To runthe component in developement mode
+To run the component in developement mode
 
 ```bash
 npm run build
