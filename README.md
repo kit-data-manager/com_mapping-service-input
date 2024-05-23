@@ -28,8 +28,6 @@ To integrate the Mapping component into your project, insert the following HTML 
 
 For enabling the download functionality, include the following HTML code in your page:
 ```html
- ...
-    <!-- use the method !-->
 
 `<div class="ui center aligned grid">
   <button type="submit" class="ui primary button" id="submit" onclick="
@@ -68,6 +66,8 @@ To runthe component in developement mode
 npm run build
 npm run dev
 ```
+
+DONOT forget to add the html code(mentioned above) to run this locally.
 
 
 ## Attributes
