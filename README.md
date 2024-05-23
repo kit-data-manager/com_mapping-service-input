@@ -47,6 +47,29 @@ The base-url attribute in the <mapping-input> element allows you to specify the 
 
 By following these steps, you can easily integrate the Mapping component into your project and utilize its capabilities for extracting metadata from instrument-generated data.
 
+
+## How to run - For developers
+
+To start using the component clone this repo to a new directory:
+
+```bash
+git clone https://github.com/kit-data-manager/com_mapping-service-input.git
+```
+
+and run:(Before running below command make sure node.js is installed in your system. You can check if it is there is your system or not by command: node -v or node --version (dependending on the operating system you are using) in your command prompt.
+
+```bash
+npm install
+```
+
+To runthe component in developement mode
+
+```bash
+npm run build
+npm run dev
+```
+
+
 ## Attributes
 
 - `base-url`: string, base-url to your Mapping Service instance
@@ -68,6 +91,7 @@ By following these steps, you can easily integrate the Mapping component into yo
 </div>`
 
 ```
+
 
 
 
