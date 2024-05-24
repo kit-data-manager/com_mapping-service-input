@@ -67,8 +67,6 @@ npm run build
 npm run dev
 ```
 
-DONOT forget to add the html code(mentioned above) to run this locally.
-
 
 ## Attributes
 
