@@ -17,7 +17,7 @@ To integrate the Mapping component into your project, insert the following HTML 
 <head>
      ...
     <!-- add the below code !-->
-     <script src="https://cdn.jsdelivr.net/npm/@kit-data-manager/mapping-service-input@latest/dist/com_mapping-service-input.es.js"></script>
+     <script type="module" src="https://cdn.jsdelivr.net/npm/@kit-data-manager/mapping-service-input@latest/dist/com_mapping-service-input.es.js"></script>
 </head>
 <body>
     <!-- use the component !-->
