@@ -51,6 +51,6 @@
   },
   "dependencies": {
     "filepond": "^4.30.4",
-    "typeahead-standalone": "^5.4.0"
+    "filepond-plugin-file-validate-size": "^2.2.8",
   }
 }

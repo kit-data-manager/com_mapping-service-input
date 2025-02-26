@@ -28,14 +28,24 @@ button {
   margin-top: auto;
 }
 
-button:hover {
+button:hover[disabled|="false"] {
   background-color: #317ed0;
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.3);
+  transform: translateY(-0.125rem);
+}
+button[disabled|="true"] {
+  background-color: #444444;
   box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.3);
   transform: translateY(-0.125rem);
 }
 
 .home-text09 {
   font-size: 1.125rem;
+}
+
+.info-small {
+  font-size: 0.875rem!important;
+  color: #333333;
 }
 
 .message {
