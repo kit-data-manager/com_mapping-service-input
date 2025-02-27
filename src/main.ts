@@ -129,6 +129,10 @@ class MappingInputProvider extends HTMLElement {
     const maxSize = this.getAttribute(ATTRIBUTES[1]);
     if (maxSize != null) {
       this.maxSize = Number.parseInt(maxSize);
+      if(isNaN(this.maxSize)){
+        console.error("Invalid maxSize attribute. Setting value to default.")
+        this.maxSize = 5;
+      }
     }
 
     // initialize and connect file uploader
@@ -138,7 +142,7 @@ class MappingInputProvider extends HTMLElement {
       FilePondLib.registerPlugin(FilePondPluginFileValidateSize);
       options.credits = false;
       options.maxFiles = 1;
-      options.maxFileSize = `${maxSize}MB`;
+      options.maxFileSize = `${this.maxSize}MB`;
       options.labelIdle = "Drag & Drop your files or <span class=\"filepond--label-action\"> Browse </span><br>" +
         `<span class=\"info-small\">(File size is limited to ${options.maxFileSize})</span>`;
       this.fileChooser = FilePondLib.create(filepondElement, options);
