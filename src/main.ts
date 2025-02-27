@@ -1,12 +1,12 @@
 import templateContent from "./template.html?raw";
 import * as FilePondLib from "filepond";
-import {type FilePond, type FilePondOptions} from "filepond";
-import FilePondPluginFileValidateSize from 'filepond-plugin-file-validate-size';
+import { type FilePond, type FilePondOptions } from "filepond";
+import FilePondPluginFileValidateSize from "filepond-plugin-file-validate-size";
 
 import filepondCSS from "filepond/dist/filepond.min.css?inline";
 import customCSS from "./style.css?inline";
 
-const ATTRIBUTES: string[] = ["base-url"];
+const ATTRIBUTES: string[] = ["base-url", "maxSize"];
 
 interface MappingItem {
   mappingId: string;
@@ -18,33 +18,46 @@ interface MappingItem {
 
 class MappingInputProvider extends HTMLElement {
   shadowRoot: ShadowRoot;
-  private testingFileChooser: FilePond | null = null;
+  private fileChooser: FilePond | null = null;
   // --- Attribute accessible from the HTML tag:
   baseUrl: URL = new URL("http://localhost:8090/");
+  maxSize: number = 5;
   // ---
 
   selectedMappingId: string | null = null;
-  selectedMappingType: string | null = null;
-  messageDisplayed: boolean | null = null;
 
   // --- Helper methods
+  /**
+   * Import additional styles.
+   *
+   * @param {string} css The css file url.
+   */
   addCssContent(css: string): void {
     const styleElem: HTMLStyleElement = document.createElement("style");
     styleElem.textContent = css;
     this.shadowRoot.append(styleElem);
   }
 
+  /**
+   * Format a given number in bytes to a human-readable file size string.
+   *
+   * @param {number} bytes The number in bytes.
+   * @param {number} decimals The number of decimals (default: 2)
+   */
+  humanFileSize = (bytes: number, decimals: number = 2) => {
+    if (bytes == 0) return "0 Bytes";
+    var k = 1024,
+      dm = decimals || 2,
+      sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"],
+      i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+  };
+
   // ---
 
   /**
-   * Construct element properties etc, without DOM access.
-   *
-   * "an element's attributes are unavailable until connected to the DOM"
-   * So you may write to, but not read from it.
-   *
-   * Sources:
-   * - https://andyogo.github.io/custom-element-reactions-diagram/
-   * - https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements#using_the_lifecycle_callbacks
+   * Constructor for basic initialization. The constructor adds custom styles,
+   * the component's template, and first event listeners to the shadowDom.
    */
   constructor() {
     super();
@@ -79,7 +92,7 @@ class MappingInputProvider extends HTMLElement {
               .finally(() => {
                 submit.removeAttribute("disabled");
                 submit.innerText = "Execute Mapping";
-                this.testingFileChooser?.removeFiles();
+                this.fileChooser?.removeFiles();
               });
           }
         },
@@ -99,7 +112,9 @@ class MappingInputProvider extends HTMLElement {
   }
 
   /**
-   * Initialize component.
+   * Callback called as soon as the component is connected to the DOM. The function
+   * initializes all additional elements, i.e., loads and renders available mappings
+   * and initializes the file upload area.
    */
   connectedCallback(): void {
     if (!this.isConnected) {
@@ -111,23 +126,28 @@ class MappingInputProvider extends HTMLElement {
       this.baseUrl = new URL(baseUrl);
     }
 
+    const maxSize = this.getAttribute(ATTRIBUTES[1]);
+    if (maxSize != null) {
+      this.maxSize = Number.parseInt(maxSize);
+    }
+
     // initialize and connect file uploader
-    const filepondElement = this.shadowRoot.querySelector('input[type="file"]');
+    const filepondElement = this.shadowRoot.querySelector("input[type=\"file\"]");
     if (filepondElement != null) {
       const options: FilePondOptions = FilePondLib.getOptions();
       FilePondLib.registerPlugin(FilePondPluginFileValidateSize);
       options.credits = false;
       options.maxFiles = 1;
-      options.maxFileSize = '1MB';
-      options.labelIdle = 'Drag & Drop your files or <span class="filepond--label-action"> Browse </span><br>' +
-          '<span class="info-small">(File size is limited to 50MB)</span>';
-      this.testingFileChooser = FilePondLib.create(filepondElement, options);
+      options.maxFileSize = `${maxSize}MB`;
+      options.labelIdle = "Drag & Drop your files or <span class=\"filepond--label-action\"> Browse </span><br>" +
+        `<span class=\"info-small\">(File size is limited to ${options.maxFileSize})</span>`;
+      this.fileChooser = FilePondLib.create(filepondElement, options);
     }
 
     // Box of detailed contents like image, description of mapping
     const mappingIdsEndpoint = `${this.baseUrl.toString()}api/v1/mappingAdministration/`;
     const optionsContainer: HTMLElement = this.shadowRoot.getElementById(
-      "options-container options-center",
+      "options-container"
     ) as HTMLInputElement;
 
     // build mapping cards
@@ -138,15 +158,18 @@ class MappingInputProvider extends HTMLElement {
           id: item.mappingId,
           title: item.title,
           description: item.description,
-          type: item.mappingType,
+          type: item.mappingType
         }));
         optionsContainer.innerHTML = "";
-        mappingIds.forEach((mapping) => {
-          const cardsDiv = document.createElement("div");
-          cardsDiv.classList.add("cards");
-          cardsDiv.innerHTML = `
-          <h3>${mapping.title}</h3>
-          <span class="home-text10 section-description">
+        for (let i = 0; i < 1; i++) {
+          mappingIds.forEach((mapping) => {
+            const cardDiv = document.createElement("div");
+            cardDiv.classList.add("cards");
+            cardDiv.innerHTML = `
+          <div class="header">
+          <span class="title">${mapping.title}</span>
+          </div>
+          <span class="description">
             <br>
             <span style="display:inline-block; overflow: auto; height: 124px;">
             ${mapping.description}
@@ -155,46 +178,63 @@ class MappingInputProvider extends HTMLElement {
           <button class="selection-button" id="mapping-button-${mapping.id}">Select</button>
             `;
 
-          const button = cardsDiv.querySelector(
-            `#mapping-button-${mapping.id}`,
-          );
+            const button = cardDiv.querySelector(
+              `#mapping-button-${mapping.id}`
+            );
 
-          if (button != null) {
-            button.addEventListener("click", () => {
-              const buttons =
-                this.shadowRoot.querySelectorAll(".selection-button");
-              buttons.forEach((button) => {
-                button.classList.remove("selected-id");
-              });
-              // Add the "selected" class to the clicked button
-              button.classList.add("selected-id");
+            if (button != null) {
+              button.addEventListener("click", () => {
+                const buttons =
+                  this.shadowRoot.querySelectorAll(".selection-button");
 
-              this.selectedMappingId = mapping.id;
-              if (this.messageDisplayed === null) {
-                const fileInput = this.shadowRoot.querySelector("#fileUpload");
-                const messageElement = document.createElement("div");
-                messageElement.innerText =
-                  "Please upload file and then click on map document to extract metadata";
-                messageElement.style.marginBottom = "10px"; // Add some bottom margin for spacing
-                messageElement.classList.add("message");
-                if (fileInput?.parentNode != null) {
-                  fileInput.parentNode.insertBefore(messageElement, fileInput);
+                //deselect all buttons
+                buttons.forEach((button) => {
+                  button.classList.remove("selected-id");
+                });
+
+                if (mapping.id != this.selectedMappingId) {
+                  // Add the "selected" class to the clicked button
+                  button.classList.add("selected-id");
+                  this.selectedMappingId = mapping.id;
+                  this.showMessage("Please select a file and then click on <i><b>Execute Mapping</b></i> to start the mapping process.");
+                } else {
+                  // Reset the entire selection
+                  this.selectedMappingId = null;
+                  this.showMessage("Please select a mapping from the list above.");
                 }
-                this.messageDisplayed = true;
-              }
-            });
-          }
-          optionsContainer.appendChild(cardsDiv);
-          if (mappingIds.length < 4) {
-            optionsContainer.classList.add("options-center"); // Add the class if less than 4 cards
-          } else {
-            optionsContainer.classList.remove("options-center"); // Remove the class if more than 4 cards
-          }
-        });
+              });
+            }
+            optionsContainer.appendChild(cardDiv);
+          });
+        }
       })
       .catch((error) => {
         console.error("Error while fetch Mapping Ids" + error);
       });
+  }
+
+  /**
+   * Show a message in the according message area. Depending on the message type
+   * the background is either green (INFO) or red (ERROR).
+   *
+   * @param {string} message The message.
+   * @param {"INFO" | "ERROR"} type The message type (default: INFO).
+   */
+  showMessage(message: string, type: "INFO" | "ERROR" = "INFO") {
+    const messageElement = this.shadowRoot.querySelector("#message");
+    if (messageElement) {
+      if (type === "ERROR") {
+        messageElement.innerHTML = "<span class=\"heroicons-outline--exclamation\"></span> " +
+          message +
+          " <span class=\"heroicons-outline--exclamation\"></span>";
+        messageElement.classList.remove("hidden", "info", "error");
+        messageElement.classList.add("error");
+      } else {
+        messageElement.innerHTML = message;
+        messageElement.classList.remove("hidden", "info", "error");
+        messageElement.classList.add("info");
+      }
+    }
   }
 
   /**
@@ -203,63 +243,71 @@ class MappingInputProvider extends HTMLElement {
    */
   async executeMapping(): Promise<boolean> {
     const selectedMappingId = this.selectedMappingId;
-    if (selectedMappingId != null && this.testingFileChooser != null) {
-      const files = this.testingFileChooser.getFiles();
-      console.log("FILES ", files);
-      return await this.testingFileChooser.processFiles(files).then((result) => {
-        console.log("RES ", result);
-        return false;
-      });
-
-     /* const uploadedFile = this.testingFileChooser.getFile();
-      if (uploadedFile != null) {
-        console.log(uploadedFile.status);
-
-        const execUrl = `${this.baseUrl.toString()}api/v1/mappingExecution/${selectedMappingId}`;
-        const file = uploadedFile.file;
-        const formData = new FormData();
-        if (file !== undefined) {
-          formData.append("document", file);
+    if (selectedMappingId === null) {
+      this.showMessage("No mapping selected.", "ERROR");
+      return false;
+    } else {
+      if (this.fileChooser != null) {
+        const files = this.fileChooser.getFiles();
+        if (files.length === 0) {
+          this.showMessage("No file selected.", "ERROR");
+          return false;
+        } else {
+          if (files[0].fileSize > 5 * 1024 * 1024) {
+            this.showMessage(`Selected file is too large 
+          (${this.humanFileSize(files[0].fileSize)} > 
+          ${this.humanFileSize(this.maxSize * 1024 * 1024)})`, "ERROR");
+            return false;
+          }
         }
 
-        return await fetch(execUrl, {
-          method: "POST",
-          body: formData,
-        })
-          .then(async (response) => {
-            if (response.status !== 200) {
-              throw new Error("Request failed with status " + response.status);
-            }
-            const contentDisposition = response?.headers.get(
-              "content-disposition",
-            );
-            const contentType = response?.headers.get("content-type");
+        const uploadedFile = this.fileChooser.getFile();
+        if (uploadedFile != null) {
+          const execUrl = `${this.baseUrl.toString()}api/v1/mappingExecution/${selectedMappingId}`;
+          const file = uploadedFile.file;
+          const formData = new FormData();
+          if (file !== undefined) {
+            formData.append("document", file);
+          }
 
-            return {
-              data: await response.blob(),
-              contentDisposition,
-              contentType,
-            };
+          return await fetch(execUrl, {
+            method: "POST",
+            body: formData
           })
-          .then((wrapper) => {
-            this.triggerDownload(
-              wrapper.data,
-              wrapper.contentDisposition ?? "",
-              wrapper.contentType ?? "",
-            );
-            return true;
-          })
-          .catch((error) => {
-            console.error(
-              "Error occurred due to response other than 200:",
-              error,
-            );
-            alert(
-              "A remote mapping error occurred. Please check server logs for details.",
-            );
-            return false;
-          });
-      } */
+            .then(async (response) => {
+              if (response.status !== 200) {
+                throw new Error(`Mapping failed. Service returned with status ${response.status}.`);
+              }
+              const contentDisposition = response?.headers.get(
+                "content-disposition"
+              );
+              const contentType = response?.headers.get("content-type");
+
+              return {
+                data: await response.blob(),
+                contentDisposition,
+                contentType
+              };
+            })
+            .then((wrapper) => {
+              this.triggerDownload(
+                wrapper.data,
+                wrapper.contentDisposition ?? "",
+                wrapper.contentType ?? ""
+              );
+              this.showMessage("The mapping process has finished and the result was downloaded.<br/>" +
+                "<span class=\"heroicons-outline--exclamation\"></span> " +
+                "Please check the downloaded result for potential errors. " +
+                "<span class=\"heroicons-outline--exclamation\"></span>");
+              return true;
+            })
+            .catch((error) => {
+              console.error(`Mapping failed with an error: ${error}`);
+              this.showMessage(error, "ERROR");
+              return false;
+            });
+        }
+      }
     }
     // fallback in case something fails to log an error
     return false;
@@ -276,11 +324,11 @@ class MappingInputProvider extends HTMLElement {
   triggerDownload(
     response: Blob,
     contentDisposition: string,
-    contentType: string,
+    contentType: string
   ): void {
     const element = document.createElement("a");
     const filename = contentDisposition.substring(
-      contentDisposition.lastIndexOf("=") + 1,
+      contentDisposition.lastIndexOf("=") + 1
     );
     element.type = contentType;
     element.href = URL.createObjectURL(response);
@@ -295,12 +343,14 @@ class MappingInputProvider extends HTMLElement {
   /**
    * Invoked each time the custom element is disconnected from the document's DOM.
    */
-  disconnectedCallback(): void {}
+  disconnectedCallback(): void {
+  }
 
   /**
    * Invoked each time the custom element is moved to a new document.
    */
-  adoptedCallback(): void {}
+  adoptedCallback(): void {
+  }
 
   /**
    * Invoked each time one of the custom element's attributes is added, removed, or changed.
@@ -313,6 +363,9 @@ class MappingInputProvider extends HTMLElement {
   attributeChangedCallback(name: string, _oldValue: any, newValue: any): void {
     if (name === ATTRIBUTES[0]) {
       this.baseUrl = newValue;
+      this.connectedCallback();
+    } else if (name === ATTRIBUTES[1]) {
+      this.maxSize = newValue;
       this.connectedCallback();
     }
   }

@@ -51,6 +51,6 @@
   },
   "dependencies": {
     "filepond": "^4.30.4",
-    "filepond-plugin-file-validate-size": "^2.2.8",
+    "filepond-plugin-file-validate-size": "^2.2.8"
   }
 }
