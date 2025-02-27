@@ -1,137 +1,156 @@
+:root {
+    --border-radius: 0.3125rem;
+    --padding-around: 1.25rem;
+    --margin-around: 1.5625rem;
+}
+
 #fileUpload {
-  padding: 0.625rem;
-  width: auto;
-  margin: 2.5rem auto 4rem;
-  border: none;
-  background-color: #d9eaea;
-  /* box-shadow: 0 0.125rem 0.3125rem rgba(0, 0, 0, 0.3); */
-  transition: all 0.3s ease;
-  font-size: 1.5625rem;
-  /* color: #f80abd; */
-  /* width: calc(90% - 2.125rem); */
-  margin-left: 25px;
-  margin-right: 25px;
-  height: 9.375rem;
-  text-align-last: center;
+    background-color: #d9eaea;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    margin: var(--margin-around);
+    height: 9.375rem;
+    border-radius: var(--border-radius);
 }
 
 button {
-  display: block;
-  margin: 0 auto;
-  border-radius: 0.3125rem;
-  font-size: 1.125rem;
-  padding: 0.625rem 1.25rem;
-  background-color: #346599;
-  color: #fff;
-  box-shadow: 0 0.125rem 0.3125rem rgba(0, 0, 0, 0.3);
-  transition: all 0.3s ease;
-  margin-top: auto;
+    display: block;
+    margin: auto auto 0.5rem auto;
+    border-radius: var(--border-radius);
+    padding: 0.5rem;
+    background-color: #346599;
+    color: #fff;
+    border: none;
+    transition: all 0.3s ease;
 }
 
-button:hover {
-  background-color: #317ed0;
-  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.3);
-  transform: translateY(-0.125rem);
+button:hover[disabled|="false"] {
+    background-color: #317ed0;
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.3);
+    transform: translateY(-0.125rem);
 }
 
-.home-text09 {
-  font-size: 1.125rem;
+button[disabled|="true"] {
+    background-color: #444444;
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.3);
+    transform: translateY(-0.125rem);
 }
 
-.message {
-  background-color: #eaf0b0;
-  align-content: center;
-  text-align: center;
-  color: #333;
-  padding: 0.625rem 1.25rem;
-  margin-bottom: 0.625rem;
-  margin-left: 1.5625rem;
-  margin-right: 1.5625rem;
-  font-size: 1rem;
-  font-weight: bold;
-  border-radius: 0.3125rem;
-  animation: fade-in 0.3s ease-in-out;
+.info-small {
+    font-size: 0.875rem !important;
+    color: #333333;
+}
+
+.info {
+    background-color: #eaf0b0;
+}
+
+.error {
+    background-color: #f0bcb0;
+}
+
+.message-area {
+    align-content: center;
+    text-align: center;
+    color: #333;
+    padding: 0.625rem var(--padding-around);
+    margin: -0.625rem var(--margin-around);
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: var(--border-radius);;
+    animation: fade-in 0.3s ease-in-out;
 }
 
 .selection-button.selected-id {
-  /* Add your selected button styles here */
-  background-color: rgb(137, 202, 84);
-  color: #fff;
+    /* Add your selected button styles here */
+    background-color: rgb(137, 202, 84);
+    color: #fff;
+}
+
+.header {
+    background-color: #AAAAAA;
+    width: 100%;
+    height: 2rem;
+    justify-content: center;
+}
+
+.title {
+    text-overflow: ellipsis;
+    font-size: 1em;
+    font-weight: bold;
+    display: flex;
+    align-items: center; /* Vertical centering */
+    justify-content: center; /* Horizontal centering */
+    height: 100%; /* Ensure the div has height */
+    width: 100%; /* Optional: Ensure full width */
+}
+
+.description {
+    font-size: 0.875rem !important;
+    color: #555555 !important;
+    margin: 0.5rem;
+    text-align: justify;
 }
 
 .mapping-options {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 var(--padding-around) 0 var(--padding-around);
 }
 
 .container-wrapper {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  overflow-x: auto;
-  align-self: center;
-  padding: 1.25rem;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    overflow-x: auto;
+    align-self: center;
+    padding: var(--padding-around);
 }
 
 /* The common styles for options-container */
 .options-container {
-  display: flex;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  padding-bottom: 0.625rem;
-}
-
-/* The class to center the container */
-.options-center {
-  justify-content: center;
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 0.625rem;
 }
 
 .cards {
-  flex: 0 0 calc(25% - 1.25rem);
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 0.625rem;
-  box-sizing: border-box;
-  border: 1px solid #ccc;
-  margin: 0.625rem;
-  overflow: hidden;
-  position: relative;
-  min-width: 18.5rem;
-  /* Added minimum width for better mobile view */
-  background-color: #eef3f4;
-  /* Add your desired background color here */
+    flex: 0 0 calc(25% - var(--padding-around));
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: var(--border-radius);;
+    margin: 0.625rem;
+    overflow: hidden;
+    position: relative;
+    min-width: 18.5rem;
+    /* Added minimum width for better mobile view */
+    background: linear-gradient(145deg, #e0e0e0, #ffffff);
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2),
+    -5px -5px 10px rgba(255, 255, 255, 0.8);
+    transition: transform 0.2s ease-in-out;
 }
 
-.cards img {
-  max-width: 6.25rem;
-  margin-bottom: 0.625rem;
+.cards:has(> button.selected-id) {
+    border: 2px solid rgb(137, 202, 84);
 }
 
-.cards h2 {
-  margin-bottom: 0.625rem;
-  white-space: normal;
-  overflow-wrap: break-word;
-  cursor: pointer;
-  width: 100%;
-  background-color: #c49898;
-  color: #333;
-  padding: 0.3125rem;
-  border-radius: 0.3125rem;
+.cards:has(> button.selected-id) .header {
+    background-color: #CCCCCC;
 }
 
-.cards div {
-  text-align: center;
-  white-space: normal;
-}
-
-
-.section-heading {
-  /* background-color: #c52222; */
-  font-size: large;
+.heroicons-outline--exclamation {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23605d5d' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3'/%3E%3C/svg%3E");
 }
