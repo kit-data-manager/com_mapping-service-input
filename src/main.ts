@@ -17,6 +17,34 @@ interface MappingItem {
 }
 
 class MappingInputProvider extends HTMLElement {
+  /**
+   * Encode string to Base64 URL-safe (no padding). Reversible and CSS selector safe.
+   */
+  private encode(str: string): string {
+    const encoder = new TextEncoder();
+    const bytes = encoder.encode(str);
+    let binary = "";
+    for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+    const base64 = btoa(binary);
+    return base64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  }
+
+  /**
+   * Decode Base64 URL-safe (no padding) back to original string.
+   */
+  private decode(encoded: string): string {
+    let b64 = encoded.replace(/-/g, "+").replace(/_/g, "/");
+    // restore padding
+    const pad = b64.length % 4;
+    if (pad === 2) b64 += "==";
+    else if (pad === 3) b64 += "=";
+    else if (pad !== 0) b64 += ""; // pad==1 is invalid; let atob throw
+    const binary = atob(b64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+    const decoder = new TextDecoder();
+    return decoder.decode(bytes);
+  }
   shadowRoot: ShadowRoot;
   private fileChooser: FilePond | null = null;
   // --- Attribute accessible from the HTML tag:
@@ -167,48 +195,55 @@ class MappingInputProvider extends HTMLElement {
         optionsContainer.innerHTML = "";
         for (let i = 0; i < 1; i++) {
           mappingIds.forEach((mapping) => {
-            const cardDiv = document.createElement("div");
-            cardDiv.classList.add("cards");
-            cardDiv.innerHTML = `
-          <div class="header">
-          <span class="title">${mapping.title}</span>
-          </div>
-          <span class="description">
-            <br>
-            <span style="display:inline-block; overflow: auto; height: 124px;">
-            ${mapping.description}
-          </span>
-          </span>
-          <button class="selection-button" id="mapping-button-${mapping.id}">Select</button>
-            `;
+            const encodedId = this.encode(mapping.id);
+            try {
+              const cardDiv = document.createElement("div");
+              cardDiv.classList.add("cards");
+              cardDiv.innerHTML = `
+                <div class="header">
+                  <span class="title">${mapping.title}</span>
+                </div>
+                <span class="description">
+                  <br>
+                  <span style="display:inline-block; overflow: auto; height: 124px;">
+                    ${mapping.description}
+                  </span>
+                </span>
+                <button class="selection-button" id="mapping-button-${encodedId}" data-original-id="${mapping.id}">Select</button>
+              `;
 
-            const button = cardDiv.querySelector(
-              `#mapping-button-${mapping.id}`
-            );
+              const button = cardDiv.querySelector(
+                `#mapping-button-${encodedId}`
+              );
 
-            if (button != null) {
-              button.addEventListener("click", () => {
-                const buttons =
-                  this.shadowRoot.querySelectorAll(".selection-button");
+              if (button != null) {
+                button.addEventListener("click", () => {
+                  const btn = button as HTMLButtonElement;
+                  const originalId = btn.getAttribute("data-original-id") ?? this.decode(btn.id.replace("mapping-button-", ""));
+                  const buttons =
+                    this.shadowRoot.querySelectorAll(".selection-button");
 
-                //deselect all buttons
-                buttons.forEach((button) => {
-                  button.classList.remove("selected-id");
+                  //deselect all buttons
+                  buttons.forEach((button) => {
+                    button.classList.remove("selected-id");
+                  });
+
+                  if (originalId != this.selectedMappingId) {
+                    // Add the "selected" class to the clicked button
+                    button.classList.add("selected-id");
+                    this.selectedMappingId = originalId;
+                    this.showMessage("Please select a file and then click on <i><b>Execute Mapping</b></i> to start the mapping process.");
+                  } else {
+                    // Reset the entire selection
+                    this.selectedMappingId = null;
+                    this.showMessage("Please select a mapping from the list above.");
+                  }
                 });
-
-                if (mapping.id != this.selectedMappingId) {
-                  // Add the "selected" class to the clicked button
-                  button.classList.add("selected-id");
-                  this.selectedMappingId = mapping.id;
-                  this.showMessage("Please select a file and then click on <i><b>Execute Mapping</b></i> to start the mapping process.");
-                } else {
-                  // Reset the entire selection
-                  this.selectedMappingId = null;
-                  this.showMessage("Please select a mapping from the list above.");
-                }
-              });
+              }
+              optionsContainer.appendChild(cardDiv);
+            } catch (err) {
+              console.error(`Error rendering mapping card for id '${mapping.id}':`, err);
             }
-            optionsContainer.appendChild(cardDiv);
           });
         }
       })
