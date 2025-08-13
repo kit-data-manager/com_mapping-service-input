@@ -1,5 +1,8 @@
-# Ignore artifacts:
+node_modules
+dist
+.dist # Ignore artifacts:
 build
 dist
 coverage
 .vscode
+src/template.html
