@@ -565,37 +565,60 @@ class MappingInputProvider extends HTMLElement {
      * @param html Raw HTML provided by internal calls (never untrusted user input).
      * @returns A safe DocumentFragment ready to be inserted.
      */
+    const fragment = document.createDocumentFragment();
+    if (!html.includes('<')) {
+      // fast path plain text
+      fragment.appendChild(document.createTextNode(html));
+      return fragment;
+    }
     const template = document.createElement('template');
     template.innerHTML = html;
-    const allowedSpanClass = 'heroicons-outline--exclamation';
-    const walker = (node: Node): Node | null => {
-      if (node.nodeType === Node.ELEMENT_NODE) {
-        const el = node as HTMLElement;
-        if (el.tagName === 'BR') return el; // keep line breaks
-        else if (el.tagName === 'EM' || el.tagName === 'STRONG' || el.tagName === 'B' || el.tagName === 'I') return el; // keep emphasis
-        else if (
-          el.tagName === 'SPAN' &&
-          el.classList.length === 1 &&
-          el.classList.contains(allowedSpanClass)
-        ) {
-          // strip any other attributes for safety
-          Array.from(el.attributes).forEach((attr) => {
-            if (attr.name !== 'class') el.removeAttribute(attr.name);
-          });
-          return el;
-        }
-        // Replace disallowed element with a text node of its textContent
-        return document.createTextNode(el.textContent ?? '');
-      }
-      if (node.nodeType === Node.TEXT_NODE) return node;
-      return null; // drop comments or others
+    const allowedSimpleTags = new Set(['B', 'I']);
+
+    const sanitizeChildren = (srcParent: Node, destParent: Node) => {
+      srcParent.childNodes.forEach((child) => walk(child, destParent));
     };
-    const outFrag = document.createDocumentFragment();
-    Array.from(template.content.childNodes).forEach((child) => {
-      const safe = walker(child);
-      if (safe) outFrag.appendChild(safe);
-    });
-    return outFrag;
+
+    const walk = (node: Node, parent: Node) => {
+      switch (node.nodeType) {
+        case Node.TEXT_NODE: {
+          if (node.textContent) parent.appendChild(document.createTextNode(node.textContent));
+          return;
+        }
+        case Node.ELEMENT_NODE: {
+          const el = node as HTMLElement;
+          const tag = el.tagName;
+          // <br> allowed (no attributes kept)
+          if (tag === 'BR') {
+            parent.appendChild(document.createElement('br'));
+            return;
+          }
+          // Emphasis tags: recreate element, drop all attributes, recurse into children
+          if (allowedSimpleTags.has(tag)) {
+            const neo = document.createElement(tag.toLowerCase());
+            parent.appendChild(neo);
+            sanitizeChildren(el, neo);
+            return;
+          }
+          // Span: recreate and transfer entire class list (strip other attributes)
+          if (tag === 'SPAN') {
+            const span = document.createElement('span');
+            span.className = el.className; // copy all classes
+            parent.appendChild(span);
+            sanitizeChildren(el, span);
+            return;
+          }
+          // Disallowed wrapper: do not keep the element, but recursively sanitize its children
+          sanitizeChildren(el, parent);
+          return;
+        }
+        default: // ignore comments / others
+          return;
+      }
+    };
+
+    template.content.childNodes.forEach((n) => walk(n, fragment));
+    return fragment;
   }
 
   /**
