@@ -1,0 +1,56 @@
+[project]
+name = "mapping-service-input"
+version = "1.2.0"
+description = "The mapping-service-input provides a minimalistic user interface for the KIT Data Manager Mapping Service. It allows users to select an existing mapping schema and use it to map their data."
+license = "Apache-2.0"
+repository = "https://github.com/kit-data-manager/com_mapping-service-input"
+homepage = "https://kit-data-manager.github.io/com_mapping-service-input"
+documentation = "https://kit-data-manager.github.io/com_mapping-service-input"
+keywords = [
+  "metadata",
+  "JSON",
+  "mapping",
+  "form",
+  "kit-data-manager",
+  "typescript"
+]
+
+[[project.people]]
+given-names = "Maximilian"
+family-names = "Inckmann"
+orcid = "https://orcid.org/0009-0005-2800-4833"
+email = "maximilian.inckmann@kit.edu"
+affiliation = "Karlsruhe Institute of Technology (KIT)"
+author = false
+maintainer = false
+publication_author = true
+
+[[project.people]]
+given-names = "Thomas"
+family-names = "Jejkal"
+orcid = "https://orcid.org/0000-0003-2804-688X"
+affiliation = "Karlsruhe Institute of Technology (KIT)"
+author = false
+maintainer = false
+publication_author = true
+
+[[project.people]]
+given-names = "Andreas"
+family-names = "Pfeil"
+orcid = "https://orcid.org/0000-0001-6575-1022"
+affiliation = "Karlsruhe Institute of Technology (KIT)"
+author = false
+maintainer = false
+publication_author = true
+
+
+[[project.people]]
+given-names = "Ajay"
+family-names = "Kirar"
+orcid = "https://orcid.org/0009-0008-3532-7018"
+author = true
+maintainer = false
+publication_author = true
+
+[config]
+verbose = true     # show detailed information about what somesy is doing
