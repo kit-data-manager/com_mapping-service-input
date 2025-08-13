@@ -1,18 +1,19 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <link rel="stylesheet" href="src/style.css" />
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script type="module" src="/src/main.ts"></script>
+    <title>Mapping Service</title>
+  </head>
 
-<head>
-  <link rel="stylesheet" href="src/style.css">
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script type="module" src="/src/main.ts"></script>
-  <title>Mapping Service</title>
-</head>
-
-<body>
-  <mapping-input base-url="https://matwerk.datamanager.kit.edu:8095/" maxSize=a id="input-component"></mapping-input>
-
-</body>
-
+  <body>
+    <mapping-input
+      base-url="https://matwerk.datamanager.kit.edu:8095/"
+      maxSize="10"
+      id="input-component"
+    ></mapping-input>
+  </body>
 </html>

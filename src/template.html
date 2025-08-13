@@ -1,14 +1,38 @@
 <div id="options" class="mapping-options">
-	<div class="container-wrapper">
-		<div id="options-container" class="options-container"/>
-		</div>
-	</div>
+  <div class="container-wrapper">
+    <div
+      id="options-container"
+      class="options-container"
+      role="listbox"
+      aria-label="Available mappings"
+      aria-describedby="mapping-instructions"
+    ></div>
+  </div>
 </div>
-<div id="message" class="message-area info">
-   Please select a mapping from the list above.
+<div
+  id="message"
+  class="message-area info"
+  role="status"
+  aria-live="polite"
+  aria-atomic="true"
+>
+  Please select a mapping from the list above.
 </div>
-<input type="file" id="fileUpload" />
+<p id="mapping-instructions" class="visually-hidden">
+  Use Arrow keys to move between mappings. Press Space or Enter to select a mapping.
+</p>
+<label for="fileUpload" class="visually-hidden">Select a file to be processed by the chosen mapping</label>
+<input type="file" id="fileUpload" aria-describedby="file-help" />
+<p id="file-help" class="visually-hidden">Only one file up to the configured maximum size is allowed.</p>
 
 <div class="row align-items-center ms-1">
-	<button type="submit" class="btn btn-primary col-auto me-3" id="submit">Execute Mapping</button>
+  <button
+    type="submit"
+    class="btn btn-primary col-auto me-3"
+    id="submit"
+    aria-label="Execute mapping"
+    aria-disabled="true"
+  >
+    Execute Mapping
+  </button>
 </div>
