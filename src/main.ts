@@ -18,6 +18,13 @@ interface MappingItem {
 
 class MappingInputProvider extends HTMLElement {
   /**
+   * Sanitize a filename by removing control characters and path separators.
+   */
+  private sanitizeFilename(name: string): string {
+    // Remove control chars, slashes, and quotes
+    return name.replace(/[\x00-\x1F\x7F\\/:*?"<>|]+/g, '').trim() || 'result';
+  }
+  /**
    * Encode string to Base64 URL-safe (no padding). Reversible and CSS selector safe.
    */
   private encode(str: string): string {
@@ -196,25 +203,35 @@ class MappingInputProvider extends HTMLElement {
             try {
               const cardDiv = document.createElement('div');
               cardDiv.classList.add('cards');
-              cardDiv.innerHTML = `
-                <div class="header">
-                  <span class="title">${mapping.title}</span>
-                </div>
-                <span class="description">
-                  <br>
-                  <span style="display:inline-block; overflow: auto; height: 124px;">
-                    ${mapping.description}
-                  </span>
-                </span>
-                <button class="selection-button" id="mapping-button-${encodedId}" data-original-id="${mapping.id}">Select</button>
-              `;
 
-              const button = cardDiv.querySelector(`#mapping-button-${encodedId}`);
+              const headerDiv = document.createElement('div');
+              headerDiv.classList.add('header');
+              const titleSpan = document.createElement('span');
+              titleSpan.classList.add('title');
+              titleSpan.textContent = mapping.title ?? '';
+              headerDiv.appendChild(titleSpan);
 
-              if (button != null) {
-                button.addEventListener('click', () => {
-                  const btn = button as HTMLButtonElement;
-                  const originalId = btn.getAttribute('data-original-id');
+              const descWrapper = document.createElement('span');
+              descWrapper.classList.add('description');
+              descWrapper.appendChild(document.createElement('br'));
+              const scrollSpan = document.createElement('span');
+              scrollSpan.setAttribute('style', 'display:inline-block; overflow: auto; height: 124px;');
+              scrollSpan.textContent = mapping.description ?? '';
+              descWrapper.appendChild(scrollSpan);
+
+              const buttonEl = document.createElement('button');
+              buttonEl.classList.add('selection-button');
+              buttonEl.id = `mapping-button-${encodedId}`;
+              buttonEl.setAttribute('data-original-id', mapping.id);
+              buttonEl.textContent = 'Select';
+
+              cardDiv.appendChild(headerDiv);
+              cardDiv.appendChild(descWrapper);
+              cardDiv.appendChild(buttonEl);
+
+              if (buttonEl != null) {
+                buttonEl.addEventListener('click', () => {
+                  const originalId = buttonEl.getAttribute('data-original-id');
                   const buttons = this.shadowRoot.querySelectorAll('.selection-button');
 
                   //deselect all buttons
@@ -224,11 +241,9 @@ class MappingInputProvider extends HTMLElement {
 
                   if (originalId != this.selectedMappingId) {
                     // Add the "selected" class to the clicked button
-                    button.classList.add('selected-id');
+                    buttonEl.classList.add('selected-id');
                     this.selectedMappingId = originalId;
-                    this.showMessage(
-                      'Please select a file and then click on <i><b>Execute Mapping</b></i> to start the mapping process.',
-                    );
+                    this.showMessage('Please select a file and then click on "Execute Mapping" to start the mapping process.');
                     // enable execution button now that a mapping is selected
                     const submitBtn = this.shadowRoot.getElementById('submit');
                     submitBtn?.removeAttribute('disabled');
@@ -261,21 +276,28 @@ class MappingInputProvider extends HTMLElement {
    * @param {string} message The message.
    * @param {"INFO" | "ERROR"} type The message type (default: INFO).
    */
-  showMessage(message: string, type: 'INFO' | 'ERROR' = 'INFO') {
-    const messageElement = this.shadowRoot.querySelector('#message');
-    if (messageElement) {
-      if (type === 'ERROR') {
-        messageElement.innerHTML =
-          '<span class="heroicons-outline--exclamation"></span> ' +
-          message +
-          ' <span class="heroicons-outline--exclamation"></span>';
-        messageElement.classList.remove('hidden', 'info', 'error');
-        messageElement.classList.add('error');
-      } else {
-        messageElement.innerHTML = message;
-        messageElement.classList.remove('hidden', 'info', 'error');
-        messageElement.classList.add('info');
-      }
+  showMessage(message: unknown, type: 'INFO' | 'ERROR' = 'INFO') {
+    const container = this.shadowRoot.querySelector('#message');
+    if (!container) return;
+    const text = typeof message === 'string' ? message : (message as any)?.message ?? String(message);
+
+    // Clear safely
+    while (container.firstChild) container.removeChild(container.firstChild);
+
+    if (type === 'ERROR') {
+      const pre = document.createElement('span');
+      pre.className = 'heroicons-outline--exclamation';
+      const post = document.createElement('span');
+      post.className = 'heroicons-outline--exclamation';
+      container.appendChild(pre);
+      container.appendChild(document.createTextNode(` ${text} `));
+      container.appendChild(post);
+      container.classList.remove('hidden', 'info', 'error');
+      container.classList.add('error');
+    } else {
+      container.textContent = text;
+      container.classList.remove('hidden', 'info', 'error');
+      container.classList.add('info');
     }
   }
 
@@ -379,7 +401,7 @@ class MappingInputProvider extends HTMLElement {
     const filename = contentDisposition.substring(contentDisposition.lastIndexOf('=') + 1);
     element.type = contentType;
     element.href = URL.createObjectURL(response);
-    element.download = filename ?? 'result';
+    element.download = this.sanitizeFilename(filename ?? 'result');
     element.style.display = 'none';
     this.shadowRoot.appendChild(element);
     element.click();
