@@ -1,5 +1,5 @@
 [project]
-name = "mapping-service-input"
+name = "@kit-data-manager/pid-component"
 version = "1.2.0"
 description = "The mapping-service-input provides a minimalistic user interface for the KIT Data Manager Mapping Service. It allows users to select an existing mapping schema and use it to map their data."
 license = "Apache-2.0"
@@ -14,16 +14,6 @@ keywords = [
   "kit-data-manager",
   "typescript"
 ]
-
-[[project.people]]
-given-names = "Maximilian"
-family-names = "Inckmann"
-orcid = "https://orcid.org/0009-0005-2800-4833"
-email = "maximilian.inckmann@kit.edu"
-affiliation = "Karlsruhe Institute of Technology (KIT)"
-author = false
-maintainer = false
-publication_author = true
 
 [[project.people]]
 given-names = "Thomas"
@@ -43,6 +33,15 @@ author = false
 maintainer = false
 publication_author = true
 
+[[project.people]]
+given-names = "Maximilian"
+family-names = "Inckmann"
+orcid = "https://orcid.org/0009-0005-2800-4833"
+email = "maximilian.inckmann@kit.edu"
+affiliation = "Karlsruhe Institute of Technology (KIT)"
+author = false
+maintainer = false
+publication_author = true
 
 [[project.people]]
 given-names = "Ajay"

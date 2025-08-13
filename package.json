@@ -1,10 +1,9 @@
 {
-  "name": "mapping-service-input",
+  "name": "@kit-data-manager/pid-component",
   "description": "The mapping-service-input provides a minimalistic user interface for the KIT Data Manager Mapping Service. It allows users to select an existing mapping schema and use it to map their data.",
   "author": {
     "name": "Ajay Kirar",
-    "url": "https://orcid.org/0009-0008-3532-7018",
-    "email": "ajay.kirar@kit.edu"
+    "url": "https://orcid.org/0009-0008-3532-7018"
   },
   "license": "Apache-2.0",
   "version": "1.2.0",
@@ -74,8 +73,7 @@
     },
     {
       "name": "Ajay Kirar",
-      "url": "https://orcid.org/0009-0008-3532-7018",
-      "email": "ajay.kirar@kit.edu"
+      "url": "https://orcid.org/0009-0008-3532-7018"
     }
   ]
 }
