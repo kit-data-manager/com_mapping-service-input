@@ -16,7 +16,7 @@
       "identifier": "https://orcid.org/0009-0008-3532-7018"
     }
   ],
-  "name": "@kit-data-manager/pid-component",
+  "name": "@kit-data-manager/mapping-service-input",
   "description": "The mapping-service-input provides a minimalistic user interface for the KIT Data Manager Mapping Service. It allows users to select an existing mapping schema and use it to map their data.",
   "version": "1.2.0",
   "keywords": [
@@ -31,7 +31,7 @@
     "https://spdx.org/licenses/Apache-2.0"
   ],
   "softwareHelp": "https://kit-data-manager.github.io/com_mapping-service-input",
-  "codeRepository": "https://github.com/kit-data-manager/com_mapping-service-input",
+  "codeRepository": "https://github.com/kit-data-manager/com_mapping-service-input.git",
   "buildInstructions": "https://kit-data-manager.github.io/com_mapping-service-input",
   "contributor": [
     {

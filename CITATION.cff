@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 message: If you use this software, please cite it using these metadata.
 type: software
-title: '@kit-data-manager/pid-component'
+title: '@kit-data-manager/mapping-service-input'
 abstract: The mapping-service-input provides a minimalistic user interface for 
   the KIT Data Manager Mapping Service. It allows users to select an existing 
   mapping schema and use it to map their data.
@@ -32,4 +32,5 @@ authors:
     family-names: Kirar
 license: Apache-2.0
 url: https://kit-data-manager.github.io/com_mapping-service-input
-repository-code: https://github.com/kit-data-manager/com_mapping-service-input
+repository-code: 
+  https://github.com/kit-data-manager/com_mapping-service-input.git

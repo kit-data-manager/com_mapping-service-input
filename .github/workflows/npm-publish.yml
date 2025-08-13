@@ -50,7 +50,7 @@ jobs:
           name: build-output
           path: dist/
       - run: npm ci
-      - run: npm publish --access public
+      - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
           

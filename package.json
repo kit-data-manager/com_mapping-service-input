@@ -1,5 +1,5 @@
 {
-  "name": "@kit-data-manager/pid-component",
+  "name": "@kit-data-manager/mapping-service-input",
   "description": "The mapping-service-input provides a minimalistic user interface for the KIT Data Manager Mapping Service. It allows users to select an existing mapping schema and use it to map their data.",
   "author": {
     "name": "Ajay Kirar",
@@ -18,7 +18,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/kit-data-manager/com_mapping-service-input"
+    "url": "https://github.com/kit-data-manager/com_mapping-service-input.git"
   },
   "bugs": {
     "url": "https://github.com/kit-data-manager/com_mapping-service-input/issues"
