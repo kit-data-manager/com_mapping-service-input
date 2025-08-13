@@ -9,6 +9,7 @@ on:
 permissions:
   contents: read
   packages: write
+  id-token: write
 
 jobs:
   build:
@@ -58,6 +59,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -65,7 +67,6 @@ jobs:
           node-version: 20
           cache: 'npm'
           registry-url: 'https://registry.npmjs.org'
-          scope: '@kit-data-manager'
       - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
