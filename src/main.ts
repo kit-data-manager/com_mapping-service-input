@@ -29,22 +29,6 @@ class MappingInputProvider extends HTMLElement {
     return base64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
   }
 
-  /**
-   * Decode Base64 URL-safe (no padding) back to original string.
-   */
-  private decode(encoded: string): string {
-    let b64 = encoded.replace(/-/g, "+").replace(/_/g, "/");
-    // restore padding
-    const pad = b64.length % 4;
-    if (pad === 2) b64 += "==";
-    else if (pad === 3) b64 += "=";
-    else if (pad !== 0) b64 += ""; // pad==1 is invalid; let atob throw
-    const binary = atob(b64);
-    const bytes = new Uint8Array(binary.length);
-    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-    const decoder = new TextDecoder();
-    return decoder.decode(bytes);
-  }
   shadowRoot: ShadowRoot;
   private fileChooser: FilePond | null = null;
   // --- Attribute accessible from the HTML tag:
@@ -102,11 +86,19 @@ class MappingInputProvider extends HTMLElement {
     // add the event handler for the submit button
     const submit = this.shadowRoot.getElementById("submit");
     if (submit != null) {
+      // disable by default until a mapping is selected
+      submit.setAttribute("disabled", "true");
       submit.addEventListener(
         "click",
         () => {
           const submit = this.shadowRoot.getElementById("submit");
           if (submit != null) {
+            // prevent execution if no mapping has been selected
+            if (this.selectedMappingId == null) {
+              this.showMessage("Please select a mapping from the list above.", "ERROR");
+              return;
+            }
+
             submit.setAttribute("disabled", "true");
             submit.innerText = "Please wait...";
             void this.executeMapping()
@@ -118,7 +110,11 @@ class MappingInputProvider extends HTMLElement {
                 }
               })
               .finally(() => {
-                submit.removeAttribute("disabled");
+                if (this.selectedMappingId == null) {
+                  submit.setAttribute("disabled", "true");
+                } else {
+                  submit.removeAttribute("disabled");
+                }
                 submit.innerText = "Execute Mapping";
                 this.fileChooser?.removeFiles();
               });
@@ -219,7 +215,7 @@ class MappingInputProvider extends HTMLElement {
               if (button != null) {
                 button.addEventListener("click", () => {
                   const btn = button as HTMLButtonElement;
-                  const originalId = btn.getAttribute("data-original-id") ?? this.decode(btn.id.replace("mapping-button-", ""));
+                  const originalId = btn.getAttribute("data-original-id");
                   const buttons =
                     this.shadowRoot.querySelectorAll(".selection-button");
 
@@ -233,10 +229,16 @@ class MappingInputProvider extends HTMLElement {
                     button.classList.add("selected-id");
                     this.selectedMappingId = originalId;
                     this.showMessage("Please select a file and then click on <i><b>Execute Mapping</b></i> to start the mapping process.");
+                    // enable execution button now that a mapping is selected
+                    const submitBtn = this.shadowRoot.getElementById("submit");
+                    submitBtn?.removeAttribute("disabled");
                   } else {
                     // Reset the entire selection
                     this.selectedMappingId = null;
                     this.showMessage("Please select a mapping from the list above.");
+                    // disable execution button again when no mapping is selected
+                    const submitBtn = this.shadowRoot.getElementById("submit");
+                    submitBtn?.setAttribute("disabled", "true");
                   }
                 });
               }
@@ -292,7 +294,7 @@ class MappingInputProvider extends HTMLElement {
           this.showMessage("No file selected.", "ERROR");
           return false;
         } else {
-          if (files[0].fileSize > 5 * 1024 * 1024) {
+          if (files[0].fileSize > this.maxSize * 1024 * 1024) {
             this.showMessage(`Selected file is too large 
           (${this.humanFileSize(files[0].fileSize)} > 
           ${this.humanFileSize(this.maxSize * 1024 * 1024)})`, "ERROR");
@@ -309,10 +311,18 @@ class MappingInputProvider extends HTMLElement {
             formData.append("document", file);
           }
 
+          console.debug("Executing mapping:", {
+            mappingId: selectedMappingId,
+            url: execUrl,
+            fileName: file.name,
+            fileSize: this.humanFileSize(file.size),
+            maxSize: this.humanFileSize(this.maxSize * 1024 * 1024),
+            payload: formData
+          });
           return await fetch(execUrl, {
             method: "POST",
             body: formData
-          })
+          })  
             .then(async (response) => {
               if (response.status !== 200) {
                 throw new Error(`Mapping failed. Service returned with status ${response.status}.`);
