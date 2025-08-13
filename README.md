@@ -1,7 +1,7 @@
 # com_mapping-service-input
 
 [![Build](https://github.com/kit-data-manager/com_mapping-service-input/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/kit-data-manager/com_mapping-service-input/actions/workflows/ci.yml)
-[![CodeQL](https://github.com/kit-data-manager/com_mapping-service-input/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/kit-data-manager/com_mapping-service-input/actions/workflows/codeql.yml)
+[![CodeQL](https://github.com/kit-data-manager/com_mapping-service-input/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/kit-data-manager/com_mapping-service-input/actions/workflows/github-code-scanning/codeql)
 [![npm version](https://img.shields.io/npm/v/@kit-data-manager/mapping-service-input.svg)](https://www.npmjs.com/package/@kit-data-manager/mapping-service-input)
 [![GitHub Packages](https://img.shields.io/badge/GitHub%20Packages-published-2ea44f?logo=github)](https://github.com/kit-data-manager/com_mapping-service-input/pkgs/npm/mapping-service-input)
 
