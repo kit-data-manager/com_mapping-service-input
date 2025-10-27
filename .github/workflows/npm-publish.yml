@@ -44,7 +44,7 @@ jobs:
           registry-url: 'https://npm.pkg.github.com'
           scope: '@kit-data-manager'
       - name: Download build artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: build-output
           path: dist/
@@ -67,7 +67,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           scope: '@kit-data-manager'
       - name: Download build artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: build-output
           path: dist/
