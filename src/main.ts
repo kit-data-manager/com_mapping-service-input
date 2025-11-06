@@ -264,6 +264,15 @@ class MappingInputProvider extends HTMLElement {
     options.labelIdle = `Drag & Drop your files or Browse (File size limit: ${options.maxFileSize})`;
     this.fileChooser = FilePondLib.create(filepondElement, options);
     queueMicrotask(() => this.decorateFilePondLabel(options.maxFileSize as string));
+    this.fileChooser.on('addfile', () => {
+      if (this.selectedMappingId) {
+        this.setSubmitEnabled(true);
+      }
+      this.removeMessage();
+    });
+    this.fileChooser.on('removefile', () => {
+      this.setSubmitEnabled(false);
+    });
   }
 
   private decorateFilePondLabel(limit: string): void {
@@ -281,20 +290,23 @@ class MappingInputProvider extends HTMLElement {
       // Using text nodes avoids surprises from HTML whitespace collapsing rules or CSS resets.
       '';
     dropLabel.replaceChildren();
+
+    const div = document.createElement('div');
     // Use non‑breaking spaces (\u00A0) so spacing is preserved regardless of CSS white-space rules.
-    dropLabel.append('Drag & Drop your files or\u00A0');
+    div.append(document.createTextNode('Drag & Drop your files or\u00A0'));
     const browseEl = document.createElement('span');
     browseEl.className = 'filepond--label-action';
     browseEl.setAttribute('role', 'button');
     browseEl.setAttribute('tabindex', '0');
     browseEl.textContent = 'Browse';
-    dropLabel.append(browseEl);
-    dropLabel.append('\u00A0');
-    dropLabel.append(document.createElement('br'));
+    div.append(browseEl);
+    div.append('\u00A0');
+    div.append(document.createElement('br'));
     const info = document.createElement('span');
     info.className = 'info-small';
     info.textContent = `(File size is limited to ${limit})`;
-    dropLabel.append(info);
+    div.append(info);
+    dropLabel.appendChild(div);
     const trigger = () => this.fileChooser?.browse();
     browseEl.addEventListener('click', trigger);
     browseEl.addEventListener('keydown', (e: Event) => {
@@ -374,7 +386,7 @@ class MappingInputProvider extends HTMLElement {
     descWrapper.classList.add('description');
     descWrapper.appendChild(document.createElement('br'));
     const scrollSpan = document.createElement('span');
-    scrollSpan.setAttribute('style', 'display:inline-block; overflow: auto; height: 124px;');
+    scrollSpan.setAttribute('style', 'display:inline-block; overflow: auto; height: 10rem;');
     scrollSpan.textContent = mapping.description ?? '';
     descWrapper.appendChild(scrollSpan);
     const buttonEl = document.createElement('button');
@@ -440,17 +452,20 @@ class MappingInputProvider extends HTMLElement {
       b.classList.remove('selected-id');
       b.setAttribute('aria-selected', 'false');
     });
-    if (id && id !== this.selectedMappingId) {
+    if (id && id !== this.selectedMappingId && id !== '') {
       buttonEl.classList.add('selected-id');
       buttonEl.setAttribute('aria-selected', 'true');
+      buttonEl.innerText = '✓ Selected';
       this.selectedMappingId = id;
-      this.showMessage(
-        'Mapping selected. Please choose a file and then activate <b><i>Execute Mapping</i></b> to start the process.',
-      );
-      this.setSubmitEnabled(true);
+      if (this.fileChooser && this.fileChooser.getFiles().length > 0) {
+        this.setSubmitEnabled(true);
+        this.removeMessage();
+      } else this.setSubmitEnabled(false);
     } else {
+      buttonEl.innerText = 'Select';
       this.selectedMappingId = null;
       this.showMessage('Please select a mapping from the list above.');
+      this.removeMessage();
       this.setSubmitEnabled(false);
     }
   }
@@ -498,8 +513,15 @@ class MappingInputProvider extends HTMLElement {
     submit.setAttribute('disabled', 'true');
     submit.innerText = 'Please wait...';
     const ok = await this.executeMapping();
-    if (ok) console.log('Mapping successfully finished.');
-    else console.error('Mapping failed.');
+    if (ok) {
+      console.log('Mapping successfully finished.');
+      this.showMessage(
+        'Mapping successfully finished. You can now select another mapping or upload a new file.',
+      );
+      setTimeout(() => this.removeMessage(), 10000);
+    } else {
+      console.error('Mapping failed.');
+    }
     if (this.selectedMappingId) submit.removeAttribute('disabled');
     else submit.setAttribute('disabled', 'true');
     submit.innerText = 'Execute Mapping';
@@ -519,6 +541,18 @@ class MappingInputProvider extends HTMLElement {
     return false;
   }
 
+  private removeMessage(): void {
+    /**
+     * Clear any existing status or error message from the message area.
+     */
+    const el = this.shadowRoot.querySelector('#message');
+    if (!el) return;
+    el.replaceChildren();
+    el.setAttribute('hidden', 'true');
+    el.classList.add('hidden');
+    el.classList.remove('info', 'error');
+  }
+
   /**
    * Render a status or error message in the message area.
    * Accepts a limited HTML subset (currently: <span class="heroicons-outline--exclamation"></span> and <br> tags).
@@ -533,6 +567,7 @@ class MappingInputProvider extends HTMLElement {
     const isError = type === 'ERROR';
     el.setAttribute('role', isError ? 'alert' : 'status');
     el.setAttribute('aria-live', isError ? 'assertive' : 'polite');
+    el.removeAttribute('hidden');
     // Sanitize supplied HTML and append
     const fragment = this.sanitizeMessageHtml(text);
     el.appendChild(fragment);

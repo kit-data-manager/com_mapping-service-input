@@ -1,38 +1,49 @@
-<div id="options" class="mapping-options">
-  <div class="container-wrapper">
-    <div
-      id="options-container"
-      class="options-container"
-      role="listbox"
-      aria-label="Available mappings"
-      aria-describedby="mapping-instructions"
-    ></div>
-  </div>
-</div>
-<div
-  id="message"
-  class="message-area info"
-  role="status"
-  aria-live="polite"
-  aria-atomic="true"
->
-  Please select a mapping from the list above.
-</div>
-<p id="mapping-instructions" class="visually-hidden">
-  Use Arrow keys to move between mappings. Press Space or Enter to select a mapping.
-</p>
-<label for="fileUpload" class="visually-hidden">Select a file to be processed by the chosen mapping</label>
-<input type="file" id="fileUpload" aria-describedby="file-help" />
-<p id="file-help" class="visually-hidden">Only one file up to the configured maximum size is allowed.</p>
+<div class="step" id="step-1" role="tab">
+  <h3>Select a Mapping</h3>
 
-<div class="row align-items-center ms-1">
+  <div id="options" class="mapping-options" role="tablist" aria-labelledby="step-1-title">
+    <div class="container-wrapper">
+      <div
+        id="options-container"
+        class="options-container"
+        role="listbox"
+        aria-label="Available mappings"
+        aria-describedby="mapping-instructions"
+      ></div>
+    </div>
+  </div>
+  <p id="mapping-instructions" class="visually-hidden">
+    Use Arrow keys to move between mappings. Press Space or Enter to select a mapping.
+  </p>
+</div>
+
+<div class="step" id="step-2" role="tab">
+  <h3>Please choose a file and then press <b><i>Execute Mapping</i></b> to start the process.</h3>
+  <div>
+    <label for="fileUpload" class="visually-hidden">Select a file to be processed by the chosen mapping</label>
+    <input type="file" id="fileUpload" aria-describedby="file-help" />
+    <p id="file-help" class="visually-hidden">Only one file up to the configured maximum size is allowed.</p>
+  </div>
+  <div
+    id="message"
+    class="message-area info"
+    role="status"
+    aria-live="polite"
+    aria-atomic="true"
+    hidden="hidden"
+  ></div>
+</div>
+
+<h3>
   <button
     type="submit"
-    class="btn btn-primary col-auto me-3"
     id="submit"
+    class="step submit"
     aria-label="Execute mapping"
     aria-disabled="true"
+    aria-description="Available after selecting a mapping and a file"
+    disabled
   >
     Execute Mapping
   </button>
-</div>
+</h3>
