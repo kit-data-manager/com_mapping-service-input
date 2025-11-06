@@ -1,6 +1,6 @@
 [project]
 name = "@kit-data-manager/mapping-service-input"
-version = "1.2.0"
+version = "1.2.1"
 description = "The mapping-service-input provides a minimalistic user interface for the KIT Data Manager Mapping Service. It allows users to select an existing mapping schema and use it to map their data."
 license = "Apache-2.0"
 repository = "https://github.com/kit-data-manager/com_mapping-service-input.git"
@@ -20,7 +20,7 @@ given-names = "Thomas"
 family-names = "Jejkal"
 orcid = "https://orcid.org/0000-0003-2804-688X"
 affiliation = "Karlsruhe Institute of Technology (KIT)"
-author = false
+author = true
 maintainer = false
 publication_author = true
 
@@ -39,15 +39,15 @@ family-names = "Inckmann"
 orcid = "https://orcid.org/0009-0005-2800-4833"
 email = "maximilian.inckmann@kit.edu"
 affiliation = "Karlsruhe Institute of Technology (KIT)"
-author = false
-maintainer = false
+author = true
+maintainer = true
 publication_author = true
 
 [[project.people]]
 given-names = "Ajay"
 family-names = "Kirar"
 orcid = "https://orcid.org/0009-0008-3532-7018"
-author = true
+author = false
 maintainer = false
 publication_author = true
 

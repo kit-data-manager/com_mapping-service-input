@@ -10,44 +10,10 @@
   "author": [
     {
       "@type": "Person",
-      "givenName": "Ajay",
-      "familyName": "Kirar",
-      "@id": "https://orcid.org/0009-0008-3532-7018",
-      "identifier": "https://orcid.org/0009-0008-3532-7018"
-    }
-  ],
-  "name": "@kit-data-manager/mapping-service-input",
-  "description": "The mapping-service-input provides a minimalistic user interface for the KIT Data Manager Mapping Service. It allows users to select an existing mapping schema and use it to map their data.",
-  "version": "1.2.0",
-  "keywords": [
-    "metadata",
-    "JSON",
-    "mapping",
-    "form",
-    "kit-data-manager",
-    "typescript"
-  ],
-  "license": [
-    "https://spdx.org/licenses/Apache-2.0"
-  ],
-  "softwareHelp": "https://kit-data-manager.github.io/com_mapping-service-input",
-  "codeRepository": "https://github.com/kit-data-manager/com_mapping-service-input.git",
-  "buildInstructions": "https://kit-data-manager.github.io/com_mapping-service-input",
-  "contributor": [
-    {
-      "@type": "Person",
       "givenName": "Thomas",
       "familyName": "Jejkal",
       "@id": "https://orcid.org/0000-0003-2804-688X",
       "identifier": "https://orcid.org/0000-0003-2804-688X",
-      "affiliation": "Karlsruhe Institute of Technology (KIT)"
-    },
-    {
-      "@type": "Person",
-      "givenName": "Andreas",
-      "familyName": "Pfeil",
-      "@id": "https://orcid.org/0000-0001-6575-1022",
-      "identifier": "https://orcid.org/0000-0001-6575-1022",
       "affiliation": "Karlsruhe Institute of Technology (KIT)"
     },
     {
@@ -58,6 +24,42 @@
       "@id": "https://orcid.org/0009-0005-2800-4833",
       "identifier": "https://orcid.org/0009-0005-2800-4833",
       "affiliation": "Karlsruhe Institute of Technology (KIT)"
+    }
+  ],
+  "name": "@kit-data-manager/mapping-service-input",
+  "description": "The mapping-service-input provides a minimalistic user interface for the KIT Data Manager Mapping Service. It allows users to select an existing mapping schema and use it to map their data.",
+  "version": "1.2.1",
+  "keywords": ["metadata", "JSON", "mapping", "form", "kit-data-manager", "typescript"],
+  "maintainer": [
+    {
+      "@type": "Person",
+      "givenName": "Maximilian",
+      "familyName": "Inckmann",
+      "email": "maximilian.inckmann@kit.edu",
+      "@id": "https://orcid.org/0009-0005-2800-4833",
+      "identifier": "https://orcid.org/0009-0005-2800-4833",
+      "affiliation": "Karlsruhe Institute of Technology (KIT)"
+    }
+  ],
+  "license": ["https://spdx.org/licenses/Apache-2.0"],
+  "softwareHelp": "https://kit-data-manager.github.io/com_mapping-service-input",
+  "codeRepository": "https://github.com/kit-data-manager/com_mapping-service-input.git",
+  "buildInstructions": "https://kit-data-manager.github.io/com_mapping-service-input",
+  "contributor": [
+    {
+      "@type": "Person",
+      "givenName": "Andreas",
+      "familyName": "Pfeil",
+      "@id": "https://orcid.org/0000-0001-6575-1022",
+      "identifier": "https://orcid.org/0000-0001-6575-1022",
+      "affiliation": "Karlsruhe Institute of Technology (KIT)"
+    },
+    {
+      "@type": "Person",
+      "givenName": "Ajay",
+      "familyName": "Kirar",
+      "@id": "https://orcid.org/0009-0008-3532-7018",
+      "identifier": "https://orcid.org/0009-0008-3532-7018"
     }
   ],
   "url": "https://kit-data-manager.github.io/com_mapping-service-input"
