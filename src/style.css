@@ -30,7 +30,7 @@ button {
     display: block;
     margin: var(--margin-around);
     border-radius: var(--border-radius);
-    width: -webkit-fill-available !important;
+    width: calc(100% - 2 * var(--margin-around));
     font-size: large;
     font-weight: bold;
     padding: 0.5rem;
@@ -128,7 +128,6 @@ button[disabled|='true'] {
     border-radius: var(--border-radius);
     padding: var(--padding-around);
     margin: var(--margin-around);
-    width: calc(100% - 2 * var(--margin-around));
 
     &:not(:disabled) {
         background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
