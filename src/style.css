@@ -2,14 +2,14 @@
     --border-radius: 0.4rem;
     --padding-around: 1.25rem;
     --margin-around: 0.75rem;
-    --primary-color: #00876C;
-    --secondary-color: #4664AA;
-    --tertiary-color: #77A200;
+    --primary-color: #00876c;
+    --secondary-color: #4664aa;
+    --tertiary-color: #77a200;
     --deactivated-color: #404040;
     --border-color: #cccccc;
     --shadow-color: rgba(0, 0, 0, 0.3);
     --text-black: #000000;
-    --text-white: #FFFFFF;
+    --text-white: #ffffff;
     --background-primary: #d9eaea;
     --background-secondary: #fdfdfd;
 
@@ -150,7 +150,6 @@ button[disabled|='true'] {
     }
 }
 
-
 .description {
     color: var(--deactivated-color) !important;
     margin: 0.5rem;
@@ -200,8 +199,9 @@ button[disabled|='true'] {
     min-width: 18.5rem;
     /* Added minimum width for better mobile view */
     background: var(--background-primary);
-    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2),
-    -5px -5px 10px rgba(255, 255, 255, 0.8);
+    box-shadow:
+        2px 2px 2px rgba(0, 0, 0, 0.2),
+        -5px -5px 10px rgba(255, 255, 255, 0.8);
     transition: transform 0.2s ease-in-out;
 
     &:has(> button.selected-id) {
