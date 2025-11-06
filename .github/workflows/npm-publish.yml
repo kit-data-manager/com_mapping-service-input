@@ -21,7 +21,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'  # Added caching
+          cache: "npm" # Added caching
       - run: npm ci
       - run: npm run build
       - name: Upload build artifacts
@@ -29,7 +29,7 @@ jobs:
         with:
           name: build-output
           path: dist/
-  
+
   publish-gpr:
     needs: build
     runs-on: ubuntu-latest
@@ -41,9 +41,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
-          registry-url: 'https://npm.pkg.github.com'
-          scope: '@kit-data-manager'
+          cache: "npm"
+          registry-url: "https://npm.pkg.github.com"
+          scope: "@kit-data-manager"
       - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
@@ -53,7 +53,7 @@ jobs:
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-          
+
   publish-npm:
     needs: build
     runs-on: ubuntu-latest
@@ -65,8 +65,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
-          registry-url: 'https://registry.npmjs.org'
+          cache: "npm"
+          registry-url: "https://registry.npmjs.org"
       - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
