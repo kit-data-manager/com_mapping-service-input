@@ -1,7 +1,7 @@
 <div class="step" id="step-1" role="tab">
-  <h3>Select a Mapping</h3>
+  <h3 aria-hidden="true">Select a Mapping</h3>
 
-  <div id="options" class="mapping-options" role="tablist" aria-labelledby="step-1-title">
+  <div id="options" class="mapping-options" role="tablist" aria-description="Select one of the available mappings">
     <div class="container-wrapper">
       <div
         id="options-container"
@@ -21,7 +21,7 @@
   <h3>Please choose a file and then press <b><i>Execute Mapping</i></b> to start the process.</h3>
   <div>
     <label for="fileUpload" class="visually-hidden">Select a file to be processed by the chosen mapping</label>
-    <input type="file" id="fileUpload" aria-describedby="file-help" />
+    <input type="file" id="fileUpload" aria-describedby="file-help"/>
     <p id="file-help" class="visually-hidden">Only one file up to the configured maximum size is allowed.</p>
   </div>
   <div
