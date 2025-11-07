@@ -28,7 +28,7 @@
   ],
   "name": "@kit-data-manager/mapping-service-input",
   "description": "The mapping-service-input provides a minimalistic user interface for the KIT Data Manager Mapping Service. It allows users to select an existing mapping schema and use it to map their data.",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "keywords": [
     "metadata",
     "JSON",

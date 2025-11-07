@@ -99,16 +99,16 @@ button[disabled|='true'] {
     color: var(--text-white);
     width: 100%;
     flex: 1 0 auto;
+    align-items: center;
     justify-content: center;
+    padding: 0.375rem;
 }
 
 .title {
     font-size: large;
     font-weight: bold;
-    display: flex;
-    margin: 0.375rem;
-    flex: 1 0 calc(var(--grid-element-min-width) - 2*0.4rem);
-    line-break: auto;
+    display: inline-flex;
+    flex: 1 0 calc(var(--grid-element-min-width) - 2 * 0.4rem);
     align-items: center; /* Vertical centering */
     justify-content: center; /* Horizontal centering */
     height: 100%; /* Ensure the div has height */
@@ -167,11 +167,12 @@ button[disabled|='true'] {
 .description {
     /*flex: 0 1 auto;*/
     color: var(--deactivated-color) !important;
-    padding: 0.5rem;
+    font-size: medium;
+    padding-inline: 0.5rem;
     display: inline-block;
     text-align: justify;
     overflow-x: auto;
-    height: calc(var(--grid-element-min-width)/2 + 2rem);
+    height: calc(var(--grid-element-min-width) / 2 + 2rem);
     margin-bottom: var(--margin-around);
 }
 
@@ -193,8 +194,8 @@ button[disabled|='true'] {
         grid-template-columns: 1fr;
     }
 
-    .description{
-        height: calc((var(--grid-element-min-width)*2)/3 + 1rem);
+    .description {
+        height: calc((var(--grid-element-min-width) * 2) / 3 + 1rem);
     }
 }
 
@@ -234,6 +235,7 @@ button[disabled|='true'] {
 
     &:has(> button.selected-id) {
         outline: 0.3rem solid var(--tertiary-color);
+        border: 1px solid var(--tertiary-color);
 
         .header {
             background-color: var(--tertiary-color) !important;
