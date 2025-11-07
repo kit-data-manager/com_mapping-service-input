@@ -1,86 +1,86 @@
 {
-    "name": "@kit-data-manager/mapping-service-input",
-    "description": "The mapping-service-input provides a minimalistic user interface for the KIT Data Manager Mapping Service. It allows users to select an existing mapping schema and use it to map their data.",
-    "author": {
-        "name": "Thomas Jejkal",
-        "url": "https://orcid.org/0000-0003-2804-688X"
+  "name": "@kit-data-manager/mapping-service-input",
+  "description": "The mapping-service-input provides a minimalistic user interface for the KIT Data Manager Mapping Service. It allows users to select an existing mapping schema and use it to map their data.",
+  "author": {
+    "name": "Thomas Jejkal",
+    "url": "https://orcid.org/0000-0003-2804-688X"
+  },
+  "license": "Apache-2.0",
+  "version": "1.2.2",
+  "private": false,
+  "keywords": [
+    "metadata",
+    "JSON",
+    "mapping",
+    "form",
+    "kit-data-manager",
+    "typescript"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kit-data-manager/com_mapping-service-input.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kit-data-manager/com_mapping-service-input/issues"
+  },
+  "type": "module",
+  "main": "./dist/com_mapping-service-input.umd.js",
+  "module": "./dist/com_mapping-service-input.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/com_mapping-service-input.es.js",
+      "require": "./dist/com_mapping-service-input.umd.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "format": "prettier --write .",
+    "lint": "eslint src --ext .ts,.js",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.46.3",
+    "@typescript-eslint/parser": "^8.46.3",
+    "typescript-eslint": "^8.46.3",
+    "eslint": "^9.39.1",
+    "globals": "^16.5.0",
+    "prettier": "^3.6.2",
+    "typescript": "^5.9.3",
+    "vite": "7.2.2"
+  },
+  "dependencies": {
+    "filepond": "^4.32.10",
+    "filepond-plugin-file-validate-size": "^2.2.8"
+  },
+  "homepage": "https://kit-data-manager.github.io/com_mapping-service-input",
+  "contributors": [
+    {
+      "name": "Maximilian Inckmann",
+      "url": "https://orcid.org/0009-0005-2800-4833",
+      "email": "maximilian.inckmann@kit.edu"
     },
-    "license": "Apache-2.0",
-    "version": "1.2.1",
-    "private": false,
-    "keywords": [
-        "metadata",
-        "JSON",
-        "mapping",
-        "form",
-        "kit-data-manager",
-        "typescript"
-    ],
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/kit-data-manager/com_mapping-service-input.git"
+    {
+      "name": "Thomas Jejkal",
+      "url": "https://orcid.org/0000-0003-2804-688X"
     },
-    "bugs": {
-        "url": "https://github.com/kit-data-manager/com_mapping-service-input/issues"
+    {
+      "name": "Andreas Pfeil",
+      "url": "https://orcid.org/0000-0001-6575-1022"
     },
-    "type": "module",
-    "main": "./dist/com_mapping-service-input.umd.js",
-    "module": "./dist/com_mapping-service-input.es.js",
-    "exports": {
-        ".": {
-            "import": "./dist/com_mapping-service-input.es.js",
-            "require": "./dist/com_mapping-service-input.umd.js"
-        }
-    },
-    "files": [
-        "dist"
-    ],
-    "scripts": {
-        "dev": "vite",
-        "format": "prettier --write .",
-        "lint": "eslint src --ext .ts,.js",
-        "build": "tsc && vite build",
-        "preview": "vite preview"
-    },
-    "devDependencies": {
-        "@typescript-eslint/eslint-plugin": "^8.46.3",
-        "@typescript-eslint/parser": "^8.46.3",
-        "typescript-eslint": "^8.46.3",
-        "eslint": "^9.39.1",
-        "globals": "^16.5.0",
-        "prettier": "^3.6.2",
-        "typescript": "^5.9.3",
-        "vite": "7.2.2"
-    },
-    "dependencies": {
-        "filepond": "^4.32.10",
-        "filepond-plugin-file-validate-size": "^2.2.8"
-    },
-    "homepage": "https://kit-data-manager.github.io/com_mapping-service-input",
-    "contributors": [
-        {
-            "name": "Maximilian Inckmann",
-            "url": "https://orcid.org/0009-0005-2800-4833",
-            "email": "maximilian.inckmann@kit.edu"
-        },
-        {
-            "name": "Thomas Jejkal",
-            "url": "https://orcid.org/0000-0003-2804-688X"
-        },
-        {
-            "name": "Andreas Pfeil",
-            "url": "https://orcid.org/0000-0001-6575-1022"
-        },
-        {
-            "name": "Ajay Kirar",
-            "url": "https://orcid.org/0009-0008-3532-7018"
-        }
-    ],
-    "maintainers": [
-        {
-            "name": "Maximilian Inckmann",
-            "url": "https://orcid.org/0009-0005-2800-4833",
-            "email": "maximilian.inckmann@kit.edu"
-        }
-    ]
+    {
+      "name": "Ajay Kirar",
+      "url": "https://orcid.org/0009-0008-3532-7018"
+    }
+  ],
+  "maintainers": [
+    {
+      "name": "Maximilian Inckmann",
+      "url": "https://orcid.org/0009-0005-2800-4833",
+      "email": "maximilian.inckmann@kit.edu"
+    }
+  ]
 }

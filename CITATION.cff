@@ -2,40 +2,41 @@ cff-version: 1.2.0
 message: If you use this software, please cite it using these metadata.
 type: software
 title: '@kit-data-manager/mapping-service-input'
-abstract: The mapping-service-input provides a minimalistic user interface for
-    the KIT Data Manager Mapping Service. It allows users to select an existing
-    mapping schema and use it to map their data.
-version: 1.2.1
+abstract: The mapping-service-input provides a minimalistic user interface for 
+  the KIT Data Manager Mapping Service. It allows users to select an existing 
+  mapping schema and use it to map their data.
+version: 1.2.2
 keywords:
-    - metadata
-    - JSON
-    - mapping
-    - form
-    - kit-data-manager
-    - typescript
+  - metadata
+  - JSON
+  - mapping
+  - form
+  - kit-data-manager
+  - typescript
 authors:
-    - orcid: https://orcid.org/0009-0005-2800-4833
-      given-names: Maximilian
-      affiliation: Karlsruhe Institute of Technology (KIT)
-      email: maximilian.inckmann@kit.edu
-      family-names: Inckmann
-    - orcid: https://orcid.org/0000-0003-2804-688X
-      affiliation: Karlsruhe Institute of Technology (KIT)
-      given-names: Thomas
-      family-names: Jejkal
-    - orcid: https://orcid.org/0000-0001-6575-1022
-      affiliation: Karlsruhe Institute of Technology (KIT)
-      given-names: Andreas
-      family-names: Pfeil
-    - given-names: Ajay
-      orcid: https://orcid.org/0009-0008-3532-7018
-      family-names: Kirar
+  - orcid: https://orcid.org/0009-0005-2800-4833
+    given-names: Maximilian
+    affiliation: Karlsruhe Institute of Technology (KIT)
+    email: maximilian.inckmann@kit.edu
+    family-names: Inckmann
+  - orcid: https://orcid.org/0000-0003-2804-688X
+    affiliation: Karlsruhe Institute of Technology (KIT)
+    given-names: Thomas
+    family-names: Jejkal
+  - orcid: https://orcid.org/0000-0001-6575-1022
+    affiliation: Karlsruhe Institute of Technology (KIT)
+    given-names: Andreas
+    family-names: Pfeil
+  - given-names: Ajay
+    orcid: https://orcid.org/0009-0008-3532-7018
+    family-names: Kirar
 license: Apache-2.0
 url: https://kit-data-manager.github.io/com_mapping-service-input
-repository-code: https://github.com/kit-data-manager/com_mapping-service-input.git
+repository-code: 
+  https://github.com/kit-data-manager/com_mapping-service-input.git
 contact:
-    - affiliation: Karlsruhe Institute of Technology (KIT)
-      family-names: Inckmann
-      email: maximilian.inckmann@kit.edu
-      given-names: Maximilian
-      orcid: https://orcid.org/0009-0005-2800-4833
+  - affiliation: Karlsruhe Institute of Technology (KIT)
+    family-names: Inckmann
+    email: maximilian.inckmann@kit.edu
+    given-names: Maximilian
+    orcid: https://orcid.org/0009-0005-2800-4833

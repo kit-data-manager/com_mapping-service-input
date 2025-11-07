@@ -1,6 +1,6 @@
 [project]
 name = "@kit-data-manager/mapping-service-input"
-version = "1.2.1"
+version = "1.2.2"
 description = "The mapping-service-input provides a minimalistic user interface for the KIT Data Manager Mapping Service. It allows users to select an existing mapping schema and use it to map their data."
 license = "Apache-2.0"
 repository = "https://github.com/kit-data-manager/com_mapping-service-input.git"
