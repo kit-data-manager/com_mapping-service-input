@@ -3,76 +3,76 @@
 name: Publish Node.js Package
 
 on:
-  release:
-    types: [published]
+    release:
+        types: [published]
 
 permissions:
-  contents: read
-  packages: write
-  id-token: write
+    contents: read
+    packages: write
+    id-token: write
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: "npm" # Added caching
-      - run: npm ci
-      - run: npm run build
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-output
-          path: dist/
+    build:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+        steps:
+            - uses: actions/checkout@v5
+            - uses: actions/setup-node@v6
+              with:
+                  node-version: 20
+                  cache: "npm" # Added caching
+            - run: npm ci
+            - run: npm run build
+            - name: Upload build artifacts
+              uses: actions/upload-artifact@v4
+              with:
+                  name: build-output
+                  path: dist/
 
-  publish-gpr:
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: "npm"
-          registry-url: "https://npm.pkg.github.com"
-          scope: "@kit-data-manager"
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: build-output
-          path: dist/
-      - run: npm ci
-      - run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+    publish-gpr:
+        needs: build
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            packages: write
+        steps:
+            - uses: actions/checkout@v5
+            - uses: actions/setup-node@v6
+              with:
+                  node-version: 20
+                  cache: "npm"
+                  registry-url: "https://npm.pkg.github.com"
+                  scope: "@kit-data-manager"
+            - name: Download build artifacts
+              uses: actions/download-artifact@v4
+              with:
+                  name: build-output
+                  path: dist/
+            - run: npm ci
+            - run: npm publish
+              env:
+                  NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
-  publish-npm:
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: "npm"
-          registry-url: "https://registry.npmjs.org"
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: build-output
-          path: dist/
-      - run: npm ci
-      - run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+    publish-npm:
+        needs: build
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            id-token: write
+        steps:
+            - uses: actions/checkout@v5
+            - uses: actions/setup-node@v6
+              with:
+                  node-version: 20
+                  cache: "npm"
+                  registry-url: "https://registry.npmjs.org"
+            - name: Download build artifacts
+              uses: actions/download-artifact@v4
+              with:
+                  name: build-output
+                  path: dist/
+            - run: npm ci
+            - run: npm publish --provenance --access public
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

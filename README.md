@@ -16,16 +16,16 @@ To integrate the Mapping component into your project, insert the following HTML 
 
 ```html
 <head>
-  ...
-  <!-- add the below code !-->
-  <script
-    type="module"
-    src="https://cdn.jsdelivr.net/npm/@kit-data-manager/mapping-service-input@latest/dist/com_mapping-service-input.es.js"
-  ></script>
+    ...
+    <!-- add the below code !-->
+    <script
+        type="module"
+        src="https://cdn.jsdelivr.net/npm/@kit-data-manager/mapping-service-input@latest/dist/com_mapping-service-input.es.js"
+    ></script>
 </head>
 <body>
-  <!-- use the component !-->
-  <mapping-input base-url="http://localhost:8090/" id="input-component"></mapping-input>
+    <!-- use the component !-->
+    <mapping-input base-url="http://localhost:8090/" id="input-component"></mapping-input>
 </body>
 ```
 
@@ -36,16 +36,16 @@ For enabling the download functionality, include the following HTML code in your
 ```html
 `
 <div class="ui center aligned grid">
-  <button
-    type="submit"
-    class="ui primary button"
-    id="submit"
-    onclick="
+    <button
+        type="submit"
+        class="ui primary button"
+        id="submit"
+        onclick="
     const component = document.getElementById('input-component');
     component.executeMapping(true)"
-  >
-    Map document
-  </button>
+    >
+        Map document
+    </button>
 </div>
 `
 ```
