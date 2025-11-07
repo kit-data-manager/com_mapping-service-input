@@ -112,7 +112,7 @@ button[disabled|='true'] {
     margin-top: var(--margin-around);
 
     > h3 {
-        font-size: x-large;
+        font-size: large;
         font-weight: bolder;
         text-align: center;
         background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
@@ -124,7 +124,7 @@ button[disabled|='true'] {
 
 .submit {
     font-weight: bolder;
-    font-size: x-large;
+    font-size: large;
     border: 0.05rem solid var(--border-color);
     box-shadow: 0 0.5rem 0.5rem var(--shadow-color);
     transition: all 0.3s ease;
