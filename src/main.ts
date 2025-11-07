@@ -386,7 +386,6 @@ class MappingInputProvider extends HTMLElement {
         descWrapper.classList.add('description');
         descWrapper.appendChild(document.createElement('br'));
         const scrollSpan = document.createElement('span');
-        scrollSpan.setAttribute('style', 'display:inline-block; overflow: auto; height: 10rem;');
         scrollSpan.textContent = mapping.description ?? '';
         descWrapper.appendChild(scrollSpan);
         const buttonEl = document.createElement('button');
