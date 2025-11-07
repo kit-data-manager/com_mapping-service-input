@@ -1,4 +1,4 @@
-:root {
+:host {
     --border-radius: 0.4rem;
     --padding-around: 1.25rem;
     --margin-around: 0.75rem;
@@ -14,9 +14,21 @@
     --background-secondary: #fdfdfd;
     --grid-element-min-width: 15rem;
 
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
     font-family: sans-serif;
     font-size: medium;
     overflow-x: hidden;
+    line-height: normal;
+    color: var(--text-black);
+    background: transparent;
+}
+
+:host *,
+:host *::before,
+:host *::after {
+    box-sizing: border-box;
 }
 
 #fileUpload {
@@ -86,7 +98,7 @@ button[disabled|='true'] {
     background-color: var(--primary-color);
     color: var(--text-white);
     width: 100%;
-    height: fit-content;
+    flex: 1 0 auto;
     justify-content: center;
 }
 
@@ -159,7 +171,7 @@ button[disabled|='true'] {
     display: inline-block;
     text-align: justify;
     overflow-x: auto;
-    height: calc(var(--grid-element-min-width)/3 + 1rem);
+    height: calc(var(--grid-element-min-width)/2 + 2rem);
     margin-bottom: var(--margin-around);
 }
 
@@ -173,8 +185,17 @@ button[disabled|='true'] {
     display: flex;
     justify-content: center;
     width: 100%;
-    overflow-x: auto;
-    align-self: center;
+    min-width: 0;
+}
+
+@container (max-width: 500px) {
+    .options-container {
+        grid-template-columns: 1fr;
+    }
+
+    .description{
+        height: calc((var(--grid-element-min-width)*2)/3 + 1rem);
+    }
 }
 
 /* The common styles for options-container */
@@ -182,11 +203,12 @@ button[disabled|='true'] {
     display: grid;
     grid-auto-columns: min-content;
     grid-auto-flow: row;
+    grid-template-columns: repeat(auto-fit, minmax(min(var(--grid-element-min-width), 100%), 1fr));
     gap: 1rem;
-    grid-template-columns: repeat(auto-fit, minmax(var(--grid-element-min-width), 1fr));
     width: 100%;
     margin: var(--margin-around);
     padding-bottom: 0.625rem;
+    container-type: inline-size;
 }
 
 .cards {

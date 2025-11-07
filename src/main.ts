@@ -77,6 +77,9 @@ class MappingInputProvider extends HTMLElement {
             submit.setAttribute('disabled', 'true');
             submit.addEventListener('click', () => void this.handleSubmitClick(), false);
         }
+
+        console.log('Shadow DOM mode:', this.shadowRoot.mode);
+        console.log('Shadow DOM host:', this.shadowRoot.host);
     }
 
     /**
