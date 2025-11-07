@@ -452,6 +452,7 @@ class MappingInputProvider extends HTMLElement {
         const buttons = this.shadowRoot.querySelectorAll<HTMLButtonElement>('.selection-button');
         buttons.forEach((b) => {
             b.classList.remove('selected-id');
+            b.textContent = 'Select';
             b.setAttribute('aria-selected', 'false');
         });
         if (id && id !== this.selectedMappingId && id !== '') {
